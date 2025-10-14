@@ -10,7 +10,7 @@ export default function AddDutyDialogExample() {
   return (
     <AddDutyDialog
       laborers={mockLaborers}
-      onAdd={(laborId, multiplier) => console.log('Add duty:', laborId, multiplier)}
+      onAdd={(laborId, multiplier, date) => console.log('Add duty:', laborId, multiplier, date)}
     />
   );
 }

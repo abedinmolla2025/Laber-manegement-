@@ -41,7 +41,7 @@ export default function HomePage() {
     });
   };
 
-  const handleAddDuty = (laborId: string, multiplier: number) => {
+  const handleAddDuty = (laborId: string, multiplier: number, date: string) => {
     setLaborers(laborers.map(labor => {
       if (labor.id === laborId) {
         const dutyAmount = labor.dailyRate * multiplier;
@@ -52,13 +52,14 @@ export default function HomePage() {
       }
       return labor;
     }));
+    const labor = laborers.find(l => l.id === laborId);
     toast({
       title: "Duty Added",
-      description: "Duty entry has been recorded successfully.",
+      description: `Duty recorded for ${labor?.name} on ${new Date(date).toLocaleDateString()}`,
     });
   };
 
-  const handleAddAdvance = (laborId: string, amount: number) => {
+  const handleAddAdvance = (laborId: string, amount: number, date: string) => {
     setLaborers(laborers.map(labor => {
       if (labor.id === laborId) {
         return {
@@ -68,9 +69,10 @@ export default function HomePage() {
       }
       return labor;
     }));
+    const labor = laborers.find(l => l.id === laborId);
     toast({
       title: "Advance Added",
-      description: "Advance payment has been recorded successfully.",
+      description: `₹${amount.toLocaleString()} advance given to ${labor?.name} on ${new Date(date).toLocaleDateString()}`,
     });
   };
 

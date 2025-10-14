@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ClipboardList } from "lucide-react";
@@ -13,20 +14,22 @@ interface Labor {
 
 interface AddDutyDialogProps {
   laborers: Labor[];
-  onAdd: (laborId: string, multiplier: number) => void;
+  onAdd: (laborId: string, multiplier: number, date: string) => void;
 }
 
 export default function AddDutyDialog({ laborers, onAdd }: AddDutyDialogProps) {
   const [open, setOpen] = useState(false);
   const [selectedLabor, setSelectedLabor] = useState("");
   const [multiplier, setMultiplier] = useState("");
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (selectedLabor && multiplier) {
-      onAdd(selectedLabor, parseFloat(multiplier));
+    if (selectedLabor && multiplier && date) {
+      onAdd(selectedLabor, parseFloat(multiplier), date);
       setSelectedLabor("");
       setMultiplier("");
+      setDate(new Date().toISOString().split('T')[0]);
       setOpen(false);
     }
   };
@@ -52,6 +55,17 @@ export default function AddDutyDialog({ laborers, onAdd }: AddDutyDialogProps) {
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="date">Date</Label>
+            <Input
+              id="date"
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              data-testid="input-duty-date"
+              required
+            />
+          </div>
           <div className="space-y-2">
             <Label htmlFor="labor">Select Labor</Label>
             <Select value={selectedLabor} onValueChange={setSelectedLabor}>

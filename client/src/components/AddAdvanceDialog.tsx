@@ -13,20 +13,22 @@ interface Labor {
 
 interface AddAdvanceDialogProps {
   laborers: Labor[];
-  onAdd: (laborId: string, amount: number) => void;
+  onAdd: (laborId: string, amount: number, date: string) => void;
 }
 
 export default function AddAdvanceDialog({ laborers, onAdd }: AddAdvanceDialogProps) {
   const [open, setOpen] = useState(false);
   const [selectedLabor, setSelectedLabor] = useState("");
   const [amount, setAmount] = useState("");
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (selectedLabor && amount) {
-      onAdd(selectedLabor, parseFloat(amount));
+    if (selectedLabor && amount && date) {
+      onAdd(selectedLabor, parseFloat(amount), date);
       setSelectedLabor("");
       setAmount("");
+      setDate(new Date().toISOString().split('T')[0]);
       setOpen(false);
     }
   };
@@ -47,6 +49,17 @@ export default function AddAdvanceDialog({ laborers, onAdd }: AddAdvanceDialogPr
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="date">Date</Label>
+            <Input
+              id="date"
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              data-testid="input-advance-date"
+              required
+            />
+          </div>
           <div className="space-y-2">
             <Label htmlFor="labor">Select Labor</Label>
             <Select value={selectedLabor} onValueChange={setSelectedLabor}>

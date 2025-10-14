@@ -10,7 +10,7 @@ export default function AddAdvanceDialogExample() {
   return (
     <AddAdvanceDialog
       laborers={mockLaborers}
-      onAdd={(laborId, amount) => console.log('Add advance:', laborId, amount)}
+      onAdd={(laborId, amount, date) => console.log('Add advance:', laborId, amount, date)}
     />
   );
 }
