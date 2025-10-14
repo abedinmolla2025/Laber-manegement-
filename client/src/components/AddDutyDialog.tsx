@@ -51,7 +51,7 @@ export default function AddDutyDialog({ laborers, onAdd }: AddDutyDialogProps) {
         <DialogHeader>
           <DialogTitle>Add Duty Entry</DialogTitle>
           <DialogDescription>
-            Record a duty entry for a laborer with quantity (days/units).
+            Record a duty entry for a laborer.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -82,7 +82,7 @@ export default function AddDutyDialog({ laborers, onAdd }: AddDutyDialogProps) {
             </Select>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="quantity">Quantity (Days/Units)</Label>
+            <Label htmlFor="quantity">Duty</Label>
             <Input
               id="quantity"
               type="number"
@@ -90,7 +90,7 @@ export default function AddDutyDialog({ laborers, onAdd }: AddDutyDialogProps) {
               min="0.5"
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
-              placeholder="Enter quantity"
+              placeholder="Enter duty amount"
               data-testid="input-quantity"
               required
             />
