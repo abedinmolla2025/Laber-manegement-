@@ -34,12 +34,12 @@ export default function AddAdvanceDialog({ laborers, onAdd }: AddAdvanceDialogPr
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" data-testid="button-add-advance">
+        <Button variant="outline" data-testid="button-add-advance" className="w-full sm:w-auto">
           <Banknote className="h-4 w-4 mr-2" />
           Add Advance
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add Advance Payment</DialogTitle>
           <DialogDescription>

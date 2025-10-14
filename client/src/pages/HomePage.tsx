@@ -123,13 +123,13 @@ export default function HomePage() {
           netPayable={netPayable}
         />
 
-        <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-          <div className="flex flex-wrap gap-3">
+        <div className="flex flex-col gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <AddLaborDialog onAdd={handleAddLabor} />
             <AddDutyDialog laborers={laborers} onAdd={handleAddDuty} />
             <AddAdvanceDialog laborers={laborers} onAdd={handleAddAdvance} />
           </div>
-          <div className="w-full sm:w-auto sm:min-w-[280px]">
+          <div className="w-full sm:max-w-md">
             <SearchBar value={searchQuery} onChange={setSearchQuery} />
           </div>
         </div>

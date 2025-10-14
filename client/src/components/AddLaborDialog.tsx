@@ -27,12 +27,12 @@ export default function AddLaborDialog({ onAdd }: AddLaborDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button data-testid="button-add-labor">
+        <Button data-testid="button-add-labor" className="w-full sm:w-auto">
           <Plus className="h-4 w-4 mr-2" />
           Add Labor
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add New Labor</DialogTitle>
           <DialogDescription>

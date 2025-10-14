@@ -39,12 +39,12 @@ export default function AddDutyDialog({ laborers, onAdd }: AddDutyDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" data-testid="button-add-duty">
+        <Button variant="outline" data-testid="button-add-duty" className="w-full sm:w-auto">
           <ClipboardList className="h-4 w-4 mr-2" />
           Add Duty
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add Duty Entry</DialogTitle>
           <DialogDescription>
