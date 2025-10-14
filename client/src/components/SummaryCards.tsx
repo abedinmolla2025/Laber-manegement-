@@ -39,7 +39,7 @@ export default function SummaryCards({
         </CardHeader>
         <CardContent>
           <div className="text-3xl font-semibold tabular-nums" data-testid="text-total-duty">
-            ৳{totalDuty.toLocaleString()}
+            ₹{totalDuty.toLocaleString()}
           </div>
         </CardContent>
       </Card>
@@ -53,7 +53,7 @@ export default function SummaryCards({
         </CardHeader>
         <CardContent>
           <div className="text-3xl font-semibold tabular-nums" data-testid="text-total-advance">
-            ৳{totalAdvance.toLocaleString()}
+            ₹{totalAdvance.toLocaleString()}
           </div>
         </CardContent>
       </Card>
@@ -72,7 +72,7 @@ export default function SummaryCards({
             }`}
             data-testid="text-net-payable"
           >
-            ৳{netPayable.toLocaleString()}
+            ₹{netPayable.toLocaleString()}
           </div>
         </CardContent>
       </Card>

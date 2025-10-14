@@ -52,7 +52,7 @@ export default function AddLaborDialog({ onAdd }: AddLaborDialogProps) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="dailyRate">Daily Rate (৳)</Label>
+            <Label htmlFor="dailyRate">Daily Rate (₹)</Label>
             <Input
               id="dailyRate"
               data-testid="input-daily-rate"

@@ -63,7 +63,7 @@ export default function AddAdvanceDialog({ laborers, onAdd }: AddAdvanceDialogPr
             </Select>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="amount">Amount (৳)</Label>
+            <Label htmlFor="amount">Amount (₹)</Label>
             <Input
               id="amount"
               data-testid="input-amount"

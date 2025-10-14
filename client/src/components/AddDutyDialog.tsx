@@ -61,7 +61,7 @@ export default function AddDutyDialog({ laborers, onAdd }: AddDutyDialogProps) {
               <SelectContent>
                 {laborers.map((labor) => (
                   <SelectItem key={labor.id} value={labor.id}>
-                    {labor.name} (৳{labor.dailyRate}/day)
+                    {labor.name} (₹{labor.dailyRate}/day)
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -84,7 +84,7 @@ export default function AddDutyDialog({ laborers, onAdd }: AddDutyDialogProps) {
             <div className="rounded-lg bg-muted p-4">
               <p className="text-sm text-muted-foreground">Calculated Amount</p>
               <p className="text-2xl font-semibold tabular-nums" data-testid="text-calculated-amount">
-                ৳{calculatedAmount.toLocaleString()}
+                ₹{calculatedAmount.toLocaleString()}
               </p>
             </div>
           )}
