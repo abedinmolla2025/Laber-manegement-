@@ -20,23 +20,23 @@ interface AddDutyDialogProps {
 export default function AddDutyDialog({ laborers, onAdd }: AddDutyDialogProps) {
   const [open, setOpen] = useState(false);
   const [selectedLabor, setSelectedLabor] = useState("");
-  const [multiplier, setMultiplier] = useState("");
+  const [quantity, setQuantity] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (selectedLabor && multiplier && date) {
-      onAdd(selectedLabor, parseFloat(multiplier), date);
+    if (selectedLabor && quantity && date) {
+      onAdd(selectedLabor, parseFloat(quantity), date);
       setSelectedLabor("");
-      setMultiplier("");
+      setQuantity("");
       setDate(new Date().toISOString().split('T')[0]);
       setOpen(false);
     }
   };
 
   const selectedLaborData = laborers.find(l => l.id === selectedLabor);
-  const calculatedAmount = selectedLaborData && multiplier 
-    ? selectedLaborData.dailyRate * parseFloat(multiplier)
+  const calculatedAmount = selectedLaborData && quantity 
+    ? selectedLaborData.dailyRate * parseFloat(quantity)
     : 0;
 
   return (
@@ -51,7 +51,7 @@ export default function AddDutyDialog({ laborers, onAdd }: AddDutyDialogProps) {
         <DialogHeader>
           <DialogTitle>Add Duty Entry</DialogTitle>
           <DialogDescription>
-            Record a duty entry for a laborer with rate multiplier.
+            Record a duty entry for a laborer with quantity (days/units).
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -82,17 +82,18 @@ export default function AddDutyDialog({ laborers, onAdd }: AddDutyDialogProps) {
             </Select>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="multiplier">Rate Multiplier</Label>
-            <Select value={multiplier} onValueChange={setMultiplier}>
-              <SelectTrigger id="multiplier" data-testid="select-multiplier">
-                <SelectValue placeholder="Choose rate" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1">1x - Regular</SelectItem>
-                <SelectItem value="1.5">1.5x - Overtime</SelectItem>
-                <SelectItem value="2">2x - Holiday</SelectItem>
-              </SelectContent>
-            </Select>
+            <Label htmlFor="quantity">Quantity (Days/Units)</Label>
+            <Input
+              id="quantity"
+              type="number"
+              step="0.5"
+              min="0.5"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              placeholder="Enter quantity"
+              data-testid="input-quantity"
+              required
+            />
           </div>
           {calculatedAmount > 0 && (
             <div className="rounded-lg bg-muted p-4">

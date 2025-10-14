@@ -41,10 +41,10 @@ export default function HomePage() {
     });
   };
 
-  const handleAddDuty = (laborId: string, multiplier: number, date: string) => {
+  const handleAddDuty = (laborId: string, quantity: number, date: string) => {
     setLaborers(laborers.map(labor => {
       if (labor.id === laborId) {
-        const dutyAmount = labor.dailyRate * multiplier;
+        const dutyAmount = labor.dailyRate * quantity;
         return {
           ...labor,
           totalDuty: labor.totalDuty + dutyAmount,
@@ -55,7 +55,7 @@ export default function HomePage() {
     const labor = laborers.find(l => l.id === laborId);
     toast({
       title: "Duty Added",
-      description: `Duty recorded for ${labor?.name} on ${new Date(date).toLocaleDateString()}`,
+      description: `${quantity} ${quantity === 1 ? 'day' : 'days'} duty for ${labor?.name} on ${new Date(date).toLocaleDateString()}`,
     });
   };
 
