@@ -83,16 +83,17 @@ export default function AddDutyDialog({ laborers, onAdd }: AddDutyDialogProps) {
           </div>
           <div className="space-y-2">
             <Label htmlFor="daily">Daily</Label>
-            <Select value={daily} onValueChange={setDaily}>
-              <SelectTrigger id="daily" data-testid="select-daily">
-                <SelectValue placeholder="Select daily quantity" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1">1</SelectItem>
-                <SelectItem value="1.5">1½</SelectItem>
-                <SelectItem value="2">2</SelectItem>
-              </SelectContent>
-            </Select>
+            <Input
+              id="daily"
+              type="number"
+              step="0.5"
+              min="0.5"
+              value={daily}
+              onChange={(e) => setDaily(e.target.value)}
+              placeholder="Enter daily (e.g., 1, 10, 15)"
+              data-testid="input-daily"
+              required
+            />
           </div>
           {calculatedAmount > 0 && (
             <div className="rounded-lg bg-muted p-4">
