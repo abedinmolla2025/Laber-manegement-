@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import SummaryCards from "@/components/SummaryCards";
 import LaborTable from "@/components/LaborTable";
 import AddLaborDialog from "@/components/AddLaborDialog";
 import AddDutyDialog from "@/components/AddDutyDialog";
 import AddAdvanceDialog from "@/components/AddAdvanceDialog";
 import ThemeToggle from "@/components/ThemeToggle";
+import SearchBar from "@/components/SearchBar";
 import { useToast } from "@/hooks/use-toast";
 
 interface Labor {
@@ -17,6 +18,7 @@ interface Labor {
 
 export default function HomePage() {
   const { toast } = useToast();
+  const [searchQuery, setSearchQuery] = useState("");
   //todo: remove mock functionality
   const [laborers, setLaborers] = useState<Labor[]>([
     { id: '1', name: 'Rajesh Kumar', dailyRate: 800, totalDuty: 12000, totalAdvance: 5000 },
@@ -82,12 +84,19 @@ export default function HomePage() {
     });
   };
 
+  const filteredLaborers = useMemo(() => {
+    if (!searchQuery.trim()) return laborers;
+    return laborers.filter(labor =>
+      labor.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [laborers, searchQuery]);
+
   const totalLaborers = laborers.length;
   const totalDuty = laborers.reduce((sum, labor) => sum + labor.totalDuty, 0);
   const totalAdvance = laborers.reduce((sum, labor) => sum + labor.totalAdvance, 0);
   const netPayable = totalDuty - totalAdvance;
 
-  const laborTableData = laborers.map(labor => ({
+  const laborTableData = filteredLaborers.map(labor => ({
     id: labor.id,
     name: labor.name,
     totalDuty: labor.totalDuty,
@@ -97,16 +106,16 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b sticky top-0 bg-background z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-semibold" data-testid="text-app-title">
+      <header className="border-b sticky top-0 bg-background z-50 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-4">
+          <h1 className="text-xl sm:text-2xl font-semibold" data-testid="text-app-title">
             Labor Management
           </h1>
           <ThemeToggle />
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">
         <SummaryCards
           totalLaborers={totalLaborers}
           totalDuty={totalDuty}
@@ -114,13 +123,27 @@ export default function HomePage() {
           netPayable={netPayable}
         />
 
-        <div className="flex flex-wrap gap-3">
-          <AddLaborDialog onAdd={handleAddLabor} />
-          <AddDutyDialog laborers={laborers} onAdd={handleAddDuty} />
-          <AddAdvanceDialog laborers={laborers} onAdd={handleAddAdvance} />
+        <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+          <div className="flex flex-wrap gap-3">
+            <AddLaborDialog onAdd={handleAddLabor} />
+            <AddDutyDialog laborers={laborers} onAdd={handleAddDuty} />
+            <AddAdvanceDialog laborers={laborers} onAdd={handleAddAdvance} />
+          </div>
+          <div className="w-full sm:w-auto sm:min-w-[280px]">
+            <SearchBar value={searchQuery} onChange={setSearchQuery} />
+          </div>
         </div>
 
-        <LaborTable laborers={laborTableData} onDelete={handleDeleteLabor} />
+        <div>
+          <div className="mb-4">
+            <h2 className="text-lg font-semibold">Labor Records</h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              {filteredLaborers.length} {filteredLaborers.length === 1 ? 'laborer' : 'laborers'} 
+              {searchQuery && ` matching "${searchQuery}"`}
+            </p>
+          </div>
+          <LaborTable laborers={laborTableData} onDelete={handleDeleteLabor} />
+        </div>
       </main>
     </div>
   );

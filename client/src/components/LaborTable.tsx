@@ -29,38 +29,53 @@ interface LaborTableProps {
 export default function LaborTable({ laborers, onDelete }: LaborTableProps) {
   if (laborers.length === 0) {
     return (
-      <div className="text-center py-12 border rounded-lg bg-muted/20">
-        <p className="text-muted-foreground">No laborers added yet. Add your first laborer to get started.</p>
+      <div className="text-center py-20 border rounded-lg bg-card">
+        <div className="max-w-md mx-auto space-y-4">
+          <div className="w-16 h-16 mx-auto rounded-full bg-muted flex items-center justify-center">
+            <Trash2 className="h-8 w-8 text-muted-foreground" />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold mb-2">No Laborers Found</h3>
+            <p className="text-sm text-muted-foreground">
+              Add your first laborer to start tracking duties and advance payments.
+            </p>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="border rounded-lg overflow-hidden">
-      <Table>
-        <TableHeader>
-          <TableRow className="hover:bg-transparent">
-            <TableHead className="font-semibold">Labor Name</TableHead>
-            <TableHead className="text-right font-semibold">Total Duty</TableHead>
-            <TableHead className="text-right font-semibold">Total Advance</TableHead>
-            <TableHead className="text-right font-semibold">Net Payable</TableHead>
-            <TableHead className="text-center font-semibold w-[100px]">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
+    <div className="border rounded-lg overflow-hidden bg-card">
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              <TableHead className="font-semibold w-[200px] sm:w-auto">Labor Name</TableHead>
+              <TableHead className="text-right font-semibold hidden sm:table-cell">Total Duty</TableHead>
+              <TableHead className="text-right font-semibold hidden sm:table-cell">Total Advance</TableHead>
+              <TableHead className="text-right font-semibold">Net Payable</TableHead>
+              <TableHead className="text-center font-semibold w-[80px]">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
           {laborers.map((labor) => (
-            <TableRow key={labor.id} data-testid={`row-labor-${labor.id}`}>
-              <TableCell className="font-medium" data-testid={`text-name-${labor.id}`}>
-                {labor.name}
+            <TableRow key={labor.id} data-testid={`row-labor-${labor.id}`} className="hover-elevate">
+              <TableCell data-testid={`text-name-${labor.id}`}>
+                <div className="font-medium">{labor.name}</div>
+                <div className="sm:hidden text-xs text-muted-foreground mt-1 space-y-0.5">
+                  <div>Duty: ₹{labor.totalDuty.toLocaleString()}</div>
+                  <div>Advance: ₹{labor.totalAdvance.toLocaleString()}</div>
+                </div>
               </TableCell>
-              <TableCell className="text-right tabular-nums" data-testid={`text-duty-${labor.id}`}>
+              <TableCell className="text-right tabular-nums hidden sm:table-cell" data-testid={`text-duty-${labor.id}`}>
                 ₹{labor.totalDuty.toLocaleString()}
               </TableCell>
-              <TableCell className="text-right tabular-nums" data-testid={`text-advance-${labor.id}`}>
+              <TableCell className="text-right tabular-nums hidden sm:table-cell" data-testid={`text-advance-${labor.id}`}>
                 ₹{labor.totalAdvance.toLocaleString()}
               </TableCell>
               <TableCell 
-                className={`text-right tabular-nums font-medium ${
+                className={`text-right tabular-nums font-semibold ${
                   labor.netPayable >= 0 ? 'text-chart-2' : 'text-chart-3'
                 }`}
                 data-testid={`text-net-${labor.id}`}
@@ -100,8 +115,9 @@ export default function LaborTable({ laborers, onDelete }: LaborTableProps) {
               </TableCell>
             </TableRow>
           ))}
-        </TableBody>
-      </Table>
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }
