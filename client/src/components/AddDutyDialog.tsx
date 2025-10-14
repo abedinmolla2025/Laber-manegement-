@@ -75,7 +75,7 @@ export default function AddDutyDialog({ laborers, onAdd }: AddDutyDialogProps) {
               <SelectContent>
                 {laborers.map((labor) => (
                   <SelectItem key={labor.id} value={labor.id}>
-                    {labor.name} (₹{labor.dailyRate}/day)
+                    {labor.name} (Daily Rate: ₹{labor.dailyRate})
                   </SelectItem>
                 ))}
               </SelectContent>
