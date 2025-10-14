@@ -20,23 +20,23 @@ interface AddDutyDialogProps {
 export default function AddDutyDialog({ laborers, onAdd }: AddDutyDialogProps) {
   const [open, setOpen] = useState(false);
   const [selectedLabor, setSelectedLabor] = useState("");
-  const [quantity, setQuantity] = useState("");
+  const [daily, setDaily] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (selectedLabor && quantity && date) {
-      onAdd(selectedLabor, parseFloat(quantity), date);
+    if (selectedLabor && daily && date) {
+      onAdd(selectedLabor, parseFloat(daily), date);
       setSelectedLabor("");
-      setQuantity("");
+      setDaily("");
       setDate(new Date().toISOString().split('T')[0]);
       setOpen(false);
     }
   };
 
   const selectedLaborData = laborers.find(l => l.id === selectedLabor);
-  const calculatedAmount = selectedLaborData && quantity 
-    ? selectedLaborData.dailyRate * parseFloat(quantity)
+  const calculatedAmount = selectedLaborData && daily 
+    ? selectedLaborData.dailyRate * parseFloat(daily)
     : 0;
 
   return (
@@ -82,18 +82,17 @@ export default function AddDutyDialog({ laborers, onAdd }: AddDutyDialogProps) {
             </Select>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="quantity">Duty</Label>
-            <Input
-              id="quantity"
-              type="number"
-              step="0.5"
-              min="0.5"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-              placeholder="Enter duty amount"
-              data-testid="input-quantity"
-              required
-            />
+            <Label htmlFor="daily">Daily</Label>
+            <Select value={daily} onValueChange={setDaily}>
+              <SelectTrigger id="daily" data-testid="select-daily">
+                <SelectValue placeholder="Select daily quantity" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">1</SelectItem>
+                <SelectItem value="1.5">1½</SelectItem>
+                <SelectItem value="2">2</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           {calculatedAmount > 0 && (
             <div className="rounded-lg bg-muted p-4">
