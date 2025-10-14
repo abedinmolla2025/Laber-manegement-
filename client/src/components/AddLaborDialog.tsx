@@ -16,8 +16,9 @@ export default function AddLaborDialog({ onAdd }: AddLaborDialogProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (name.trim() && dailyRate) {
-      onAdd(name.trim(), parseFloat(dailyRate));
+    if (name.trim()) {
+      const rate = dailyRate ? parseFloat(dailyRate) : 0;
+      onAdd(name.trim(), rate);
       setName("");
       setDailyRate("");
       setOpen(false);
@@ -52,7 +53,7 @@ export default function AddLaborDialog({ onAdd }: AddLaborDialogProps) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="dailyRate">Daily Rate (₹)</Label>
+            <Label htmlFor="dailyRate">Daily (₹)</Label>
             <Input
               id="dailyRate"
               data-testid="input-daily-rate"
@@ -60,8 +61,7 @@ export default function AddLaborDialog({ onAdd }: AddLaborDialogProps) {
               step="0.01"
               value={dailyRate}
               onChange={(e) => setDailyRate(e.target.value)}
-              placeholder="Enter daily rate"
-              required
+              placeholder="Enter daily rate (optional)"
             />
           </div>
           <div className="flex justify-end gap-3">
