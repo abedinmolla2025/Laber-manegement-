@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+import { Trash2, FileText, Download } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,9 +16,13 @@ import {
 interface LaborData {
   id: string;
   name: string;
+  dailyRate: number;
+  totalDaily: number;
   totalDuty: number;
   totalAdvance: number;
   netPayable: number;
+  dutyEntries: Array<{ date: string; daily: number; amount: number }>;
+  advanceEntries: Array<{ date: string; amount: number }>;
 }
 
 interface LaborTableProps {
@@ -52,10 +56,11 @@ export default function LaborTable({ laborers, onDelete }: LaborTableProps) {
           <TableHeader>
             <TableRow className="hover:bg-transparent">
               <TableHead className="font-semibold w-[200px] sm:w-auto">Labor Name</TableHead>
+              <TableHead className="text-right font-semibold hidden md:table-cell">Total Daily</TableHead>
               <TableHead className="text-right font-semibold hidden sm:table-cell">Total Duty</TableHead>
               <TableHead className="text-right font-semibold hidden sm:table-cell">Total Advance</TableHead>
               <TableHead className="text-right font-semibold">Net Payable</TableHead>
-              <TableHead className="text-center font-semibold w-[80px]">Actions</TableHead>
+              <TableHead className="text-center font-semibold w-[120px]">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -64,9 +69,13 @@ export default function LaborTable({ laborers, onDelete }: LaborTableProps) {
               <TableCell data-testid={`text-name-${labor.id}`}>
                 <div className="font-medium">{labor.name}</div>
                 <div className="sm:hidden text-xs text-muted-foreground mt-1 space-y-0.5">
+                  <div>Daily: {labor.totalDaily}</div>
                   <div>Duty: ₹{labor.totalDuty.toLocaleString()}</div>
                   <div>Advance: ₹{labor.totalAdvance.toLocaleString()}</div>
                 </div>
+              </TableCell>
+              <TableCell className="text-right tabular-nums hidden md:table-cell" data-testid={`text-daily-${labor.id}`}>
+                {labor.totalDaily}
               </TableCell>
               <TableCell className="text-right tabular-nums hidden sm:table-cell" data-testid={`text-duty-${labor.id}`}>
                 ₹{labor.totalDuty.toLocaleString()}
@@ -83,35 +92,45 @@ export default function LaborTable({ laborers, onDelete }: LaborTableProps) {
                 ₹{labor.netPayable.toLocaleString()}
               </TableCell>
               <TableCell className="text-center">
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      data-testid={`button-delete-${labor.id}`}
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Delete Labor Record</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Are you sure you want to delete {labor.name}? This action cannot be undone and will remove all duty and advance records.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel data-testid="button-cancel-delete">Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => onDelete(labor.id)}
-                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                        data-testid="button-confirm-delete"
+                <div className="flex items-center justify-center gap-1">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    data-testid={`button-pdf-${labor.id}`}
+                    title="View PDF Report"
+                  >
+                    <FileText className="h-4 w-4" />
+                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        data-testid={`button-delete-${labor.id}`}
                       >
-                        Delete
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Labor Record</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Are you sure you want to delete {labor.name}? This action cannot be undone and will remove all duty and advance records.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel data-testid="button-cancel-delete">Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => onDelete(labor.id)}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          data-testid="button-confirm-delete"
+                        >
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
               </TableCell>
             </TableRow>
           ))}

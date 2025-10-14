@@ -12,8 +12,11 @@ interface Labor {
   id: string;
   name: string;
   dailyRate: number;
+  totalDaily: number;
   totalDuty: number;
   totalAdvance: number;
+  dutyEntries: Array<{ date: string; daily: number; amount: number }>;
+  advanceEntries: Array<{ date: string; amount: number }>;
 }
 
 export default function HomePage() {
@@ -21,9 +24,9 @@ export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState("");
   //todo: remove mock functionality
   const [laborers, setLaborers] = useState<Labor[]>([
-    { id: '1', name: 'Rajesh Kumar', dailyRate: 800, totalDuty: 12000, totalAdvance: 5000 },
-    { id: '2', name: 'Amit Sharma', dailyRate: 750, totalDuty: 9500, totalAdvance: 3000 },
-    { id: '3', name: 'Vijay Singh', dailyRate: 900, totalDuty: 15000, totalAdvance: 7000 },
+    { id: '1', name: 'Rajesh Kumar', dailyRate: 800, totalDaily: 15, totalDuty: 12000, totalAdvance: 5000, dutyEntries: [], advanceEntries: [] },
+    { id: '2', name: 'Amit Sharma', dailyRate: 750, totalDaily: 12.5, totalDuty: 9500, totalAdvance: 3000, dutyEntries: [], advanceEntries: [] },
+    { id: '3', name: 'Vijay Singh', dailyRate: 900, totalDaily: 16.5, totalDuty: 15000, totalAdvance: 7000, dutyEntries: [], advanceEntries: [] },
   ]);
 
   const handleAddLabor = (name: string, dailyRate: number) => {
@@ -31,8 +34,11 @@ export default function HomePage() {
       id: Date.now().toString(),
       name,
       dailyRate,
+      totalDaily: 0,
       totalDuty: 0,
       totalAdvance: 0,
+      dutyEntries: [],
+      advanceEntries: [],
     };
     setLaborers([...laborers, newLabor]);
     toast({
@@ -41,13 +47,16 @@ export default function HomePage() {
     });
   };
 
-  const handleAddDuty = (laborId: string, quantity: number, date: string) => {
+  const handleAddDuty = (laborId: string, daily: number, date: string) => {
     setLaborers(laborers.map(labor => {
       if (labor.id === laborId) {
-        const dutyAmount = labor.dailyRate * quantity;
+        const dutyAmount = labor.dailyRate * daily;
+        const newEntry = { date, daily, amount: dutyAmount };
         return {
           ...labor,
+          totalDaily: labor.totalDaily + daily,
           totalDuty: labor.totalDuty + dutyAmount,
+          dutyEntries: [...labor.dutyEntries, newEntry],
         };
       }
       return labor;
@@ -55,16 +64,18 @@ export default function HomePage() {
     const labor = laborers.find(l => l.id === laborId);
     toast({
       title: "Duty Added",
-      description: `${quantity} ${quantity === 1 ? 'day' : 'days'} duty for ${labor?.name} on ${new Date(date).toLocaleDateString()}`,
+      description: `${daily} daily duty for ${labor?.name} on ${new Date(date).toLocaleDateString()}`,
     });
   };
 
   const handleAddAdvance = (laborId: string, amount: number, date: string) => {
     setLaborers(laborers.map(labor => {
       if (labor.id === laborId) {
+        const newEntry = { date, amount };
         return {
           ...labor,
           totalAdvance: labor.totalAdvance + amount,
+          advanceEntries: [...labor.advanceEntries, newEntry],
         };
       }
       return labor;
@@ -101,9 +112,13 @@ export default function HomePage() {
   const laborTableData = filteredLaborers.map(labor => ({
     id: labor.id,
     name: labor.name,
+    totalDaily: labor.totalDaily,
     totalDuty: labor.totalDuty,
     totalAdvance: labor.totalAdvance,
     netPayable: labor.totalDuty - labor.totalAdvance,
+    dutyEntries: labor.dutyEntries,
+    advanceEntries: labor.advanceEntries,
+    dailyRate: labor.dailyRate,
   }));
 
   return (
