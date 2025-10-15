@@ -55,6 +55,13 @@ All migration tasks have been successfully completed. The Labor Management appli
 [x] 31. Add Cancel and Apply Crop buttons - COMPLETED ✓
 [x] 32. Clean up imageRef on form reset - COMPLETED ✓
 
+## PDF Profile Style Layout
+[x] 33. Redesign PDF header with profile card style - COMPLETED ✓
+[x] 34. Display photo, name, and address together in profile card - COMPLETED ✓
+[x] 35. Make profile photo larger and more prominent (30x30) - COMPLETED ✓
+[x] 36. Add location icon to address display - COMPLETED ✓
+[x] 37. Update table startY position for new layout - COMPLETED ✓
+
 ---
 ## All Features Complete
 The Labor Management System now includes:
@@ -63,7 +70,7 @@ The Labor Management System now includes:
 ✓ Duty and advance payment tracking
 ✓ Summary dashboard with totals and net payable
 ✓ Search functionality
-✓ PDF generation with photos and addresses
+✓ PDF generation with photos and addresses in profile style
 ✓ PDF preview and download
 ✓ Professional styling with dark/light mode support
 

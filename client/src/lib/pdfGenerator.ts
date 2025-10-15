@@ -35,15 +35,31 @@ export const generateLaborPDF = async (labor: Labor) => {
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   
-  // Header background - adjust height if address is present
-  const headerHeight = labor.address ? 60 : 50;
+  // Header background
+  const headerHeight = 20;
   doc.setFillColor(59, 130, 246);
   doc.rect(0, 0, pageWidth, headerHeight, 'F');
   
-  // Add photo or initials fallback
-  const photoSize = 20;
-  const photoX = 15;
-  const photoY = 15;
+  // Title in header
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(18);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Labor Management Report', pageWidth / 2, 14, { align: 'center' });
+  
+  // Profile Card with photo, name, and address
+  const profileY = headerHeight + 10;
+  const profileHeight = labor.address ? 45 : 35;
+  
+  // Profile card background
+  doc.setFillColor(248, 250, 252);
+  doc.setDrawColor(59, 130, 246);
+  doc.setLineWidth(0.5);
+  doc.roundedRect(15, profileY, pageWidth - 30, profileHeight, 3, 3, 'FD');
+  
+  // Photo - larger and more prominent
+  const photoSize = 30;
+  const photoX = 20;
+  const photoY = profileY + 7.5;
   
   doc.setFillColor(255, 255, 255);
   doc.circle(photoX + photoSize/2, photoY + photoSize/2, photoSize/2, 'F');
@@ -58,45 +74,44 @@ export const generateLaborPDF = async (labor: Labor) => {
       } catch {
         // If image fails to load, show initials instead
         doc.setTextColor(59, 130, 246);
-        doc.setFontSize(10);
+        doc.setFontSize(14);
         doc.setFont('helvetica', 'bold');
-        doc.text(labor.name.slice(0, 2).toUpperCase(), photoX + photoSize/2, photoY + photoSize/2 + 3, { align: 'center' });
+        doc.text(labor.name.slice(0, 2).toUpperCase(), photoX + photoSize/2, photoY + photoSize/2 + 4, { align: 'center' });
       }
     } else {
       // Photo URL failed to load, show initials
       doc.setTextColor(59, 130, 246);
-      doc.setFontSize(10);
+      doc.setFontSize(14);
       doc.setFont('helvetica', 'bold');
-      doc.text(labor.name.slice(0, 2).toUpperCase(), photoX + photoSize/2, photoY + photoSize/2 + 3, { align: 'center' });
+      doc.text(labor.name.slice(0, 2).toUpperCase(), photoX + photoSize/2, photoY + photoSize/2 + 4, { align: 'center' });
     }
   } else {
     // No photo provided, show initials
     doc.setTextColor(59, 130, 246);
-    doc.setFontSize(10);
+    doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
-    doc.text(labor.name.slice(0, 2).toUpperCase(), photoX + photoSize/2, photoY + photoSize/2 + 3, { align: 'center' });
+    doc.text(labor.name.slice(0, 2).toUpperCase(), photoX + photoSize/2, photoY + photoSize/2 + 4, { align: 'center' });
   }
   
-  // Title
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(22);
-  doc.setFont('helvetica', 'bold');
-  doc.text('Labor Management Report', pageWidth / 2, 18, { align: 'center' });
+  // Profile information next to photo
+  const infoX = photoX + photoSize + 10;
   
-  // Laborer name
+  doc.setTextColor(0, 0, 0);
   doc.setFontSize(16);
-  doc.text(`${labor.name}`, pageWidth / 2, 32, { align: 'center' });
+  doc.setFont('helvetica', 'bold');
+  doc.text(labor.name, infoX, profileY + 14);
   
-  // Daily rate
   doc.setFontSize(11);
   doc.setFont('helvetica', 'normal');
-  doc.text(`Daily Rate: ₹${labor.dailyRate.toLocaleString()}`, pageWidth / 2, 42, { align: 'center' });
+  doc.setTextColor(59, 130, 246);
+  doc.text(`Daily Rate: ₹${labor.dailyRate.toLocaleString()}`, infoX, profileY + 24);
   
-  // Address if available - handle long addresses with text wrapping
+  // Address if available
   if (labor.address) {
     doc.setFontSize(10);
-    const addressLines = doc.splitTextToSize(`Address: ${labor.address}`, pageWidth - 30);
-    doc.text(addressLines, pageWidth / 2, 52, { align: 'center' });
+    doc.setTextColor(100, 100, 100);
+    const addressLines = doc.splitTextToSize(`📍 ${labor.address}`, pageWidth - infoX - 20);
+    doc.text(addressLines, infoX, profileY + 34);
   }
   
   // Reset text color for content
@@ -143,7 +158,7 @@ export const generateLaborPDF = async (labor: Labor) => {
   });
   
   autoTable(doc, {
-    startY: headerHeight + 10,
+    startY: profileY + profileHeight + 10,
     head: [['Date', 'Daily', 'Rate', 'Advance']],
     body: tableData,
     theme: 'grid',
