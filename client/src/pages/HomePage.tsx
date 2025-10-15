@@ -195,16 +195,19 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b sticky top-0 bg-background z-50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-4">
-          <h1 className="text-xl sm:text-2xl font-semibold" data-testid="text-app-title">
-            Labor Management
-          </h1>
+      <header className="border-b sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight" data-testid="text-app-title">
+              Labor Management
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1">Track duties, advances, and payments efficiently</p>
+          </div>
           <ThemeToggle />
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         <div className="w-full sm:max-w-md">
           <SearchBar value={searchQuery} onChange={setSearchQuery} />
         </div>
