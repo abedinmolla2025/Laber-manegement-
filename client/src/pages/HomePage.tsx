@@ -191,7 +191,7 @@ export default function HomePage() {
   }, [laborers, searchQuery]);
 
   const totalLaborers = laborers.length;
-  const totalDuty = laborers.reduce((sum, labor) => sum + labor.totalDuty, 0);
+  const totalDuty = laborers.reduce((sum, labor) => sum + (labor.totalDaily * labor.dailyRate), 0);
   const totalAdvance = laborers.reduce((sum, labor) => sum + labor.totalAdvance, 0);
   const netPayable = totalDuty - totalAdvance;
 
@@ -203,7 +203,7 @@ export default function HomePage() {
     totalDaily: labor.totalDaily,
     totalDuty: labor.totalDuty,
     totalAdvance: labor.totalAdvance,
-    netPayable: labor.totalDuty - labor.totalAdvance,
+    netPayable: (labor.totalDaily * labor.dailyRate) - labor.totalAdvance,
     dutyEntries: labor.dutyEntries,
     advanceEntries: labor.advanceEntries,
     dailyRate: labor.dailyRate,

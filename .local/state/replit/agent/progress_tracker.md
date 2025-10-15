@@ -177,24 +177,37 @@ PDF Table Headers: Date | Day | Daily | Rate | Advance
 [x] 80. Update progress tracker with all completions - COMPLETED ✓
 [x] 81. Mark project import as complete - COMPLETED ✓
 
-## PDF Summary Fix - Current Session
-[x] 82. Add Total Daily to PDF Summary (কতগুলো daily entry) - COMPLETED ✓
-[x] 83. Show Total Duty as days count (কত দিন কাজ করেছে) - COMPLETED ✓
-[x] 84. Update Net Payable calculation (Total Duty × Daily Rate - Total Advance) - COMPLETED ✓
-[x] 85. Verify application running with no errors - COMPLETED ✓
+## PDF Summary Calculation Fix - Current Session
+[x] 82. Fix PDF calculation to use Total Daily × Daily Rate - COMPLETED ✓
+[x] 83. Update Total Duty to show duty entries count (days worked) - COMPLETED ✓
+[x] 84. Fix HomePage Net Payable calculation - COMPLETED ✓
+[x] 85. Fix LaborTable Net Payable calculation - COMPLETED ✓
+[x] 86. Verify application running with no errors - COMPLETED ✓
+
+**সঠিক Calculation এখন:**
+
+Daily = Quantity (মাত্রা), দিনে 1, 1.5, বা 2 daily হতে পারে
+
+**উদাহরণ:**
+- Daily Rate = ₹500 per daily
+- Total Daily = 15 (মোট কত daily)
+- Total Duty = 3 days (কতদিন কাজ করেছে)
+- Total Amount = 15 × ₹500 = ₹7,500
+- Net Payable = ₹7,500 - Total Advance
 
 **PDF Summary এখন এভাবে দেখাবে:**
 
 বাম কলাম:
-- Total Daily: 15 (কতগুলো daily entry)
-- Total Duty: 12 days (কত দিন কাজ করেছে)
+- Total Daily: 15 (কত daily quantity)
+- Total Duty: 3 days (কতদিন কাজ করেছে)
 
 ডান কলাম:
-- Total Advance: ₹5,000
-- Net Payable: ₹7,000 (Total Duty × Daily Rate - Total Advance)
+- Total Advance: ₹2,000
+- Net Payable: ₹5,500 (Total Daily × Daily Rate - Total Advance)
 
-✅ **FINAL STATUS: ALL MIGRATION TASKS COMPLETE**
+✅ **FINAL STATUS: ALL TASKS COMPLETE**
 Server running on port 5000 ✓
 All features operational ✓
-PDF Summary fixed ✓
+PDF calculation fixed ✓
+Net payable calculation corrected ✓
 Ready for production use ✓
