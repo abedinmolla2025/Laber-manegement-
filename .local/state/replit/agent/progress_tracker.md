@@ -161,3 +161,14 @@ PDF Table Headers: Date | Day | Daily | Rate | Advance
 - Daily Rate (দৈনিক হার)
 - Photo (ছবি) - cropping সহ
 - Address (ঠিকানা)
+
+## PDF Summary Update
+[x] 72. Change "Total Daily" to "Total Duty Days" in PDF summary - COMPLETED ✓
+[x] 73. Show "X days" format for total duty days - COMPLETED ✓
+[x] 74. Test PDF summary display - COMPLETED ✓
+
+**PDF Summary এখন এভাবে দেখাবে:**
+- Total Duty Days: 15 days (বাম দিকে)
+- Total Duty: ₹12,000 (বাম দিকে)
+- Total Advance: ₹5,000 (ডান দিকে)
+- Net Payable: ₹7,000 (ডান দিকে)

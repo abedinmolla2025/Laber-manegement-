@@ -231,9 +231,9 @@ export const generateLaborPDF = async (labor: Labor) => {
   const leftCol = 20;
   const rightCol = pageWidth / 2 + 10;
   
-  doc.text(`Total Daily:`, leftCol, finalY + 14);
+  doc.text(`Total Duty Days:`, leftCol, finalY + 14);
   doc.setFont('helvetica', 'bold');
-  doc.text(`${labor.totalDaily}`, leftCol + 45, finalY + 14);
+  doc.text(`${labor.totalDaily} days`, leftCol + 55, finalY + 14);
   
   doc.setFont('helvetica', 'normal');
   doc.text(`Total Duty:`, leftCol, finalY + 24);
