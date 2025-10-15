@@ -215,10 +215,27 @@ Daily = Quantity (মাত্রা), দিনে 1, 1.5, বা 2 daily হ�
 - যেদিন duty entry নেই সেদিন Daily column-এ × mark দেখাবে
 - Rate এবং Advance column-এ '-' দেখাবে
 
+## Auto-Recalculation on Rate Change
+[x] 90. Recalculate all duty entry amounts when daily rate is edited - COMPLETED ✓
+[x] 91. Update totalDuty amount based on new daily rate - COMPLETED ✓
+[x] 92. Test rate change with auto-recalculation - COMPLETED ✓
+
+**নতুন Feature:** Rate পরিবর্তনে Auto-calculation
+যখন Labor-এর Daily Rate edit করা হবে, তখন:
+- সব duty entries-র amount নতুন rate অনুযায়ী recalculate হবে
+- totalDuty amount আপডেট হবে
+- Net Payable automatically সঠিক হবে
+
+**উদাহরণ:**
+- পুরানো rate: ₹500, 5 daily = ₹2,500
+- নতুন rate: ₹600 করলে
+- Same 5 daily = ₹3,000 (auto recalculate)
+
 ✅ **FINAL STATUS: ALL TASKS COMPLETE**
 Server running on port 5000 ✓
 All features operational ✓
 PDF calculation fixed ✓
 Net payable calculation corrected ✓
 Cross marks for non-working days ✓
+Auto-recalculation on rate change ✓
 Ready for production use ✓
