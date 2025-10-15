@@ -18,6 +18,19 @@ export default function AddLaborDialog({ onAdd }: AddLaborDialogProps) {
   const [photoFileName, setPhotoFileName] = useState("");
   const [address, setAddress] = useState("");
 
+  const resetForm = () => {
+    setName("");
+    setDailyRate("");
+    setPhoto("");
+    setPhotoFileName("");
+    setAddress("");
+    // Clear file input
+    const fileInput = document.getElementById('photo') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = "";
+    }
+  };
+
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.type.startsWith('image/')) {
@@ -27,6 +40,16 @@ export default function AddLaborDialog({ onAdd }: AddLaborDialogProps) {
         setPhoto(reader.result as string);
       };
       reader.readAsDataURL(file);
+      // Clear the input so the same file can be selected again
+      e.target.value = "";
+    }
+  };
+
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen);
+    if (!newOpen) {
+      // Reset form when dialog closes
+      resetForm();
     }
   };
 
@@ -40,17 +63,13 @@ export default function AddLaborDialog({ onAdd }: AddLaborDialogProps) {
         photo || undefined, 
         address.trim() || undefined
       );
-      setName("");
-      setDailyRate("");
-      setPhoto("");
-      setPhotoFileName("");
-      setAddress("");
+      resetForm();
       setOpen(false);
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button data-testid="button-add-labor" className="w-full sm:w-auto">
           <Plus className="h-4 w-4 mr-2" />
