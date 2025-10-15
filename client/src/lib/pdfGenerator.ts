@@ -225,7 +225,16 @@ export const generateLaborPDF = async (labor: Labor) => {
     }
   });
   
-  const finalY = (doc as any).lastAutoTable.finalY + 15;
+  let finalY = (doc as any).lastAutoTable.finalY + 15;
+  
+  // Check if summary will fit on current page (need ~55 units for summary box)
+  const summaryHeight = 55;
+  
+  if (finalY + summaryHeight > pageHeight - 25) {
+    // Not enough space, add new page for summary
+    doc.addPage();
+    finalY = 20;
+  }
   
   // Summary box
   doc.setDrawColor(59, 130, 246);
@@ -276,10 +285,8 @@ export const generateLaborPDF = async (labor: Labor) => {
   }
   doc.text(`₹${netPayable.toLocaleString()}`, rightCol + 50, finalY + 24);
   
-  // Footer
-  doc.setTextColor(128, 128, 128);
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(9);
+  // Add footer to all pages after everything is complete
+  const totalPages = doc.getNumberOfPages();
   const currentDate = new Date().toLocaleDateString('en-IN', { 
     year: 'numeric', 
     month: 'long', 
@@ -287,8 +294,16 @@ export const generateLaborPDF = async (labor: Labor) => {
     hour: '2-digit',
     minute: '2-digit'
   });
-  doc.text(`Generated on: ${currentDate}`, pageWidth / 2, pageHeight - 15, { align: 'center' });
-  doc.text('Labor Management System', pageWidth / 2, pageHeight - 10, { align: 'center' });
+  
+  // Loop through all pages and add footer
+  for (let i = 1; i <= totalPages; i++) {
+    doc.setPage(i);
+    doc.setTextColor(128, 128, 128);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.text(`Generated on: ${currentDate}`, pageWidth / 2, pageHeight - 15, { align: 'center' });
+    doc.text(`Labor Management System | Page ${i} of ${totalPages}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+  }
   
   return doc;
 };
