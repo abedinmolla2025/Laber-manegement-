@@ -8,6 +8,44 @@ import {
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  app.get("/api/laborers/complete", async (req, res) => {
+    try {
+      const laborers = await storage.getAllLaborers();
+      const laborersWithEntries = await Promise.all(
+        laborers.map(async (laborer) => {
+          const dutyEntries = await storage.getDutyEntriesByLaborer(laborer.id);
+          const advanceEntries = await storage.getAdvanceEntriesByLaborer(laborer.id);
+          
+          const totalDaily = dutyEntries.reduce((sum, entry) => sum + Number(entry.daily), 0);
+          const totalDuty = dutyEntries.reduce((sum, entry) => sum + Number(entry.amount), 0);
+          const totalAdvance = advanceEntries.reduce((sum, entry) => sum + Number(entry.amount), 0);
+          
+          return {
+            ...laborer,
+            dailyRate: Number(laborer.dailyRate),
+            totalDaily,
+            totalDuty,
+            totalAdvance,
+            dutyEntries: dutyEntries.map(e => ({
+              id: e.id,
+              date: e.date,
+              daily: Number(e.daily),
+              amount: Number(e.amount)
+            })),
+            advanceEntries: advanceEntries.map(e => ({
+              id: e.id,
+              date: e.date,
+              amount: Number(e.amount)
+            }))
+          };
+        })
+      );
+      res.json(laborersWithEntries);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch laborers with entries" });
+    }
+  });
+
   app.get("/api/laborers", async (req, res) => {
     try {
       const laborers = await storage.getAllLaborers();

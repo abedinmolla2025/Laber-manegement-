@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import SummaryCards from "@/components/SummaryCards";
 import LaborTable from "@/components/LaborTable";
 import AddLaborDialog from "@/components/AddLaborDialog";
@@ -8,6 +9,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 import SearchBar from "@/components/SearchBar";
 import { useToast } from "@/hooks/use-toast";
 import { previewLaborPDF, downloadLaborPDF } from "@/lib/pdfGenerator";
+import { queryClient, apiRequest } from "@/lib/queryClient";
 
 interface Labor {
   id: string;
@@ -18,164 +20,127 @@ interface Labor {
   totalDaily: number;
   totalDuty: number;
   totalAdvance: number;
-  dutyEntries: Array<{ date: string; daily: number; amount: number }>;
-  advanceEntries: Array<{ date: string; amount: number }>;
+  dutyEntries: Array<{ id?: string; date: string; daily: number; amount: number }>;
+  advanceEntries: Array<{ id?: string; date: string; amount: number }>;
 }
 
 export default function HomePage() {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
-  //todo: remove mock functionality
-  const [laborers, setLaborers] = useState<Labor[]>([
-    { 
-      id: '1', 
-      name: 'Rajesh Kumar', 
-      dailyRate: 800, 
-      totalDaily: 15, 
-      totalDuty: 12000, 
-      totalAdvance: 5000, 
-      dutyEntries: [
-        { date: '2024-10-01', daily: 5, amount: 4000 },
-        { date: '2024-10-05', daily: 4, amount: 3200 },
-        { date: '2024-10-10', daily: 6, amount: 4800 }
-      ], 
-      advanceEntries: [
-        { date: '2024-10-03', amount: 2000 },
-        { date: '2024-10-08', amount: 3000 }
-      ] 
+
+  const { data: laborers = [], isLoading } = useQuery<Labor[]>({
+    queryKey: ['/api/laborers/complete'],
+  });
+
+  const addLaborMutation = useMutation({
+    mutationFn: async (data: { name: string; dailyRate: number; photo?: string; address?: string }) => {
+      return apiRequest('POST', '/api/laborers', data);
     },
-    { 
-      id: '2', 
-      name: 'Amit Sharma', 
-      dailyRate: 750, 
-      totalDaily: 12.5, 
-      totalDuty: 9500, 
-      totalAdvance: 3000, 
-      dutyEntries: [
-        { date: '2024-10-02', daily: 5.5, amount: 4125 },
-        { date: '2024-10-07', daily: 7, amount: 5250 }
-      ], 
-      advanceEntries: [
-        { date: '2024-10-04', amount: 3000 }
-      ] 
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/laborers/complete'] });
+      toast({
+        title: "Labor Added",
+        description: `${variables.name} has been added successfully.`,
+      });
     },
-    { 
-      id: '3', 
-      name: 'Vijay Singh', 
-      dailyRate: 900, 
-      totalDaily: 16.5, 
-      totalDuty: 15000, 
-      totalAdvance: 7000, 
-      dutyEntries: [
-        { date: '2024-10-01', daily: 8, amount: 7200 },
-        { date: '2024-10-06', daily: 8.5, amount: 7650 }
-      ], 
-      advanceEntries: [
-        { date: '2024-10-02', amount: 4000 },
-        { date: '2024-10-09', amount: 3000 }
-      ] 
+  });
+
+  const addDutyMutation = useMutation({
+    mutationFn: async (data: { laborerId: string; daily: number; date: string }) => {
+      const labor = laborers.find(l => l.id === data.laborerId);
+      const amount = labor ? labor.dailyRate * data.daily : 0;
+      return apiRequest('POST', '/api/duty-entries', {
+        laborerId: data.laborerId,
+        daily: data.daily,
+        date: data.date,
+        amount: amount,
+      });
     },
-  ]);
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/laborers/complete'] });
+      const labor = laborers.find(l => l.id === variables.laborerId);
+      toast({
+        title: "Duty Added",
+        description: `${variables.daily} daily duty for ${labor?.name} on ${new Date(variables.date).toLocaleDateString()}`,
+      });
+    },
+  });
+
+  const addAdvanceMutation = useMutation({
+    mutationFn: async (data: { laborerId: string; amount: number; date: string }) => {
+      return apiRequest('POST', '/api/advance-entries', data);
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/laborers/complete'] });
+      const labor = laborers.find(l => l.id === variables.laborerId);
+      toast({
+        title: "Advance Added",
+        description: `₹${variables.amount.toLocaleString()} advance given to ${labor?.name} on ${new Date(variables.date).toLocaleDateString()}`,
+      });
+    },
+  });
+
+  const editLaborMutation = useMutation({
+    mutationFn: async (data: { id: string; name: string; dailyRate: number; photo?: string; address?: string }) => {
+      const { id, ...updateData } = data;
+      
+      // Update the laborer
+      await apiRequest('PATCH', `/api/laborers/${id}`, updateData);
+
+      // Get the laborer's duty entries and update their amounts
+      const labor = laborers.find(l => l.id === id);
+      if (labor && labor.dutyEntries.length > 0) {
+        await Promise.all(
+          labor.dutyEntries.map(entry =>
+            apiRequest('PATCH', `/api/duty-entries/${entry.id}`, {
+              amount: entry.daily * data.dailyRate,
+            })
+          )
+        );
+      }
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/laborers/complete'] });
+      toast({
+        title: "Labor Updated",
+        description: `${variables.name} details have been updated successfully. All amounts recalculated.`,
+      });
+    },
+  });
+
+  const deleteLaborMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return apiRequest('DELETE', `/api/laborers/${id}`);
+    },
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/laborers/complete'] });
+      const labor = laborers.find(l => l.id === id);
+      toast({
+        title: "Labor Deleted",
+        description: `${labor?.name} has been removed successfully.`,
+        variant: "destructive",
+      });
+    },
+  });
 
   const handleAddLabor = (name: string, dailyRate: number, photo?: string, address?: string) => {
-    const newLabor: Labor = {
-      id: Date.now().toString(),
-      name,
-      dailyRate,
-      photo,
-      address,
-      totalDaily: 0,
-      totalDuty: 0,
-      totalAdvance: 0,
-      dutyEntries: [],
-      advanceEntries: [],
-    };
-    setLaborers([...laborers, newLabor]);
-    toast({
-      title: "Labor Added",
-      description: `${name} has been added successfully.`,
-    });
+    addLaborMutation.mutate({ name, dailyRate, photo, address });
   };
 
-  const handleAddDuty = (laborId: string, daily: number, date: string) => {
-    setLaborers(laborers.map(labor => {
-      if (labor.id === laborId) {
-        const dutyAmount = labor.dailyRate * daily;
-        const newEntry = { date, daily, amount: dutyAmount };
-        return {
-          ...labor,
-          totalDaily: labor.totalDaily + daily,
-          totalDuty: labor.totalDuty + dutyAmount,
-          dutyEntries: [...labor.dutyEntries, newEntry],
-        };
-      }
-      return labor;
-    }));
-    const labor = laborers.find(l => l.id === laborId);
-    toast({
-      title: "Duty Added",
-      description: `${daily} daily duty for ${labor?.name} on ${new Date(date).toLocaleDateString()}`,
-    });
+  const handleAddDuty = (laborerId: string, daily: number, date: string) => {
+    addDutyMutation.mutate({ laborerId, daily, date });
   };
 
-  const handleAddAdvance = (laborId: string, amount: number, date: string) => {
-    setLaborers(laborers.map(labor => {
-      if (labor.id === laborId) {
-        const newEntry = { date, amount };
-        return {
-          ...labor,
-          totalAdvance: labor.totalAdvance + amount,
-          advanceEntries: [...labor.advanceEntries, newEntry],
-        };
-      }
-      return labor;
-    }));
-    const labor = laborers.find(l => l.id === laborId);
-    toast({
-      title: "Advance Added",
-      description: `₹${amount.toLocaleString()} advance given to ${labor?.name} on ${new Date(date).toLocaleDateString()}`,
-    });
+  const handleAddAdvance = (laborerId: string, amount: number, date: string) => {
+    addAdvanceMutation.mutate({ laborerId, amount, date });
   };
 
   const handleEditLabor = (id: string, name: string, dailyRate: number, photo?: string, address?: string) => {
-    setLaborers(laborers.map(labor => {
-      if (labor.id === id) {
-        // Recalculate all duty entry amounts with new daily rate
-        const updatedDutyEntries = labor.dutyEntries.map(entry => ({
-          ...entry,
-          amount: entry.daily * dailyRate
-        }));
-        
-        // Recalculate total duty amount
-        const newTotalDuty = updatedDutyEntries.reduce((sum, entry) => sum + entry.amount, 0);
-        
-        return {
-          ...labor,
-          name,
-          dailyRate,
-          photo,
-          address,
-          dutyEntries: updatedDutyEntries,
-          totalDuty: newTotalDuty
-        };
-      }
-      return labor;
-    }));
-    const labor = laborers.find(l => l.id === id);
-    toast({
-      title: "Labor Updated",
-      description: `${name} details have been updated successfully. All amounts recalculated.`,
-    });
+    editLaborMutation.mutate({ id, name, dailyRate, photo, address });
   };
 
   const handleDeleteLabor = (id: string) => {
-    const labor = laborers.find(l => l.id === id);
-    setLaborers(laborers.filter(l => l.id !== id));
-    toast({
-      title: "Labor Deleted",
-      description: `${labor?.name} has been removed successfully.`,
-      variant: "destructive",
-    });
+    deleteLaborMutation.mutate(id);
   };
 
   const handlePdfPreview = (labor: any) => {
@@ -219,6 +184,14 @@ export default function HomePage() {
     advanceEntries: labor.advanceEntries,
     dailyRate: labor.dailyRate,
   }));
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground">Loading laborers...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
