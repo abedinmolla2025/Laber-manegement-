@@ -65,12 +65,20 @@ export const generateLaborPDF = (labor: Labor) => {
     });
   });
   
-  const tableData = mergedEntries.map(entry => [
-    entry.date,
-    entry.daily,
-    entry.rate,
-    entry.advance
-  ]);
+  const tableData = mergedEntries.map(entry => {
+    const date = new Date(entry.date);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = String(date.getFullYear()).slice(-2);
+    const formattedDate = `${day}${month}${year}`;
+    
+    return [
+      formattedDate,
+      entry.daily,
+      entry.rate,
+      entry.advance
+    ];
+  });
   
   autoTable(doc, {
     startY: 60,
