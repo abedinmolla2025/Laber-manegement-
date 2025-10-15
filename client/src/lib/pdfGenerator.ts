@@ -4,6 +4,8 @@ import autoTable from 'jspdf-autotable';
 interface Labor {
   id: string;
   name: string;
+  photo?: string;
+  address?: string;
   dailyRate: number;
   totalDaily: number;
   totalDuty: number;
@@ -18,9 +20,10 @@ export const generateLaborPDF = (labor: Labor) => {
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   
-  // Header background
+  // Header background - adjust height if address is present
+  const headerHeight = labor.address ? 60 : 50;
   doc.setFillColor(59, 130, 246);
-  doc.rect(0, 0, pageWidth, 50, 'F');
+  doc.rect(0, 0, pageWidth, headerHeight, 'F');
   
   // Title
   doc.setTextColor(255, 255, 255);
@@ -36,6 +39,12 @@ export const generateLaborPDF = (labor: Labor) => {
   doc.setFontSize(11);
   doc.setFont('helvetica', 'normal');
   doc.text(`Daily Rate: ₹${labor.dailyRate.toLocaleString()}`, pageWidth / 2, 42, { align: 'center' });
+  
+  // Address if available
+  if (labor.address) {
+    doc.setFontSize(10);
+    doc.text(`Address: ${labor.address}`, pageWidth / 2, 52, { align: 'center' });
+  }
   
   // Reset text color for content
   doc.setTextColor(0, 0, 0);
@@ -81,7 +90,7 @@ export const generateLaborPDF = (labor: Labor) => {
   });
   
   autoTable(doc, {
-    startY: 60,
+    startY: headerHeight + 10,
     head: [['Date', 'Daily', 'Rate', 'Advance']],
     body: tableData,
     theme: 'grid',
