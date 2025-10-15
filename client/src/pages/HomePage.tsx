@@ -140,12 +140,23 @@ export default function HomePage() {
   const handleEditLabor = (id: string, name: string, dailyRate: number, photo?: string, address?: string) => {
     setLaborers(laborers.map(labor => {
       if (labor.id === id) {
+        // Recalculate all duty entry amounts with new daily rate
+        const updatedDutyEntries = labor.dutyEntries.map(entry => ({
+          ...entry,
+          amount: entry.daily * dailyRate
+        }));
+        
+        // Recalculate total duty amount
+        const newTotalDuty = updatedDutyEntries.reduce((sum, entry) => sum + entry.amount, 0);
+        
         return {
           ...labor,
           name,
           dailyRate,
           photo,
-          address
+          address,
+          dutyEntries: updatedDutyEntries,
+          totalDuty: newTotalDuty
         };
       }
       return labor;
@@ -153,7 +164,7 @@ export default function HomePage() {
     const labor = laborers.find(l => l.id === id);
     toast({
       title: "Labor Updated",
-      description: `${name} details have been updated successfully.`,
+      description: `${name} details have been updated successfully. All amounts recalculated.`,
     });
   };
 
