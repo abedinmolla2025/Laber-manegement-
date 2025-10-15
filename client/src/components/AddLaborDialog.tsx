@@ -3,24 +3,34 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Plus } from "lucide-react";
 
 interface AddLaborDialogProps {
-  onAdd: (name: string, dailyRate: number) => void;
+  onAdd: (name: string, dailyRate: number, photo?: string, address?: string) => void;
 }
 
 export default function AddLaborDialog({ onAdd }: AddLaborDialogProps) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [dailyRate, setDailyRate] = useState("");
+  const [photo, setPhoto] = useState("");
+  const [address, setAddress] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (name.trim()) {
       const rate = dailyRate ? parseFloat(dailyRate) : 0;
-      onAdd(name.trim(), rate);
+      onAdd(
+        name.trim(), 
+        rate, 
+        photo.trim() || undefined, 
+        address.trim() || undefined
+      );
       setName("");
       setDailyRate("");
+      setPhoto("");
+      setAddress("");
       setOpen(false);
     }
   };
@@ -37,10 +47,10 @@ export default function AddLaborDialog({ onAdd }: AddLaborDialogProps) {
         <DialogHeader>
           <DialogTitle>Add New Labor</DialogTitle>
           <DialogDescription>
-            Enter the labor name and daily rate to add a new worker.
+            Enter the labor details to add a new worker.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name">Labor Name</Label>
             <Input
@@ -53,7 +63,7 @@ export default function AddLaborDialog({ onAdd }: AddLaborDialogProps) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="dailyRate">Daily (₹)</Label>
+            <Label htmlFor="dailyRate">Daily Rate (₹)</Label>
             <Input
               id="dailyRate"
               data-testid="input-daily-rate"
@@ -62,6 +72,27 @@ export default function AddLaborDialog({ onAdd }: AddLaborDialogProps) {
               value={dailyRate}
               onChange={(e) => setDailyRate(e.target.value)}
               placeholder="Enter daily rate (optional)"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="photo">Photo URL</Label>
+            <Input
+              id="photo"
+              data-testid="input-photo-url"
+              value={photo}
+              onChange={(e) => setPhoto(e.target.value)}
+              placeholder="Enter photo URL (optional)"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="address">Address</Label>
+            <Textarea
+              id="address"
+              data-testid="input-address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="Enter address (optional)"
+              rows={3}
             />
           </div>
           <div className="flex justify-end gap-3">
