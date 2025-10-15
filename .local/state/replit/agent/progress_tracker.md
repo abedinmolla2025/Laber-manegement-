@@ -137,3 +137,14 @@ PDF-তে এখন Day কলম যোগ হয়েছে যা বাং
 - শনিবার (Saturday)
 
 PDF Table Headers: Date | Day | Daily | Rate | Advance
+
+## Day Column Fix  
+[x] 62. Debug and fix Bengali day display issue in PDF - COMPLETED ✓
+[x] 63. Verify date parsing is working correctly - COMPLETED ✓
+[x] 64. Use Romanized Bengali for day names (jsPDF limitation) - COMPLETED ✓
+[x] 65. Test PDF with Romanized Bengali day names - COMPLETED ✓
+
+**সমাধান:** jsPDF Bengali script support করে না বলে Romanized Bengali ব্যবহার করা হয়েছে:
+- Robibar (রবিবার), Shombar (সোমবার), Mongolbar (মঙ্গলবার), 
+- Budhbar (বুধবার), Brihoshpotibar (বৃহস্পতিবার), 
+- Shukrobar (শুক্রবার), Shonibar (শনিবার)

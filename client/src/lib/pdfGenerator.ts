@@ -118,7 +118,8 @@ export const generateLaborPDF = async (labor: Labor) => {
   doc.setTextColor(0, 0, 0);
   
   const getBengaliDay = (date: Date): string => {
-    const days = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
+    // Using Romanized Bengali since jsPDF doesn't support Bengali script without custom fonts
+    const days = ['Robibar', 'Shombar', 'Mongolbar', 'Budhbar', 'Brihoshpotibar', 'Shukrobar', 'Shonibar'];
     return days[date.getDay()];
   };
 
@@ -148,7 +149,14 @@ export const generateLaborPDF = async (labor: Labor) => {
   });
   
   const tableData = mergedEntries.map(entry => {
-    const date = new Date(entry.date);
+    // Parse date correctly - handle YYYY-MM-DD format
+    const dateParts = entry.date.split('-');
+    const date = new Date(
+      parseInt(dateParts[0]), 
+      parseInt(dateParts[1]) - 1, 
+      parseInt(dateParts[2])
+    );
+    
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = String(date.getFullYear()).slice(-2);
