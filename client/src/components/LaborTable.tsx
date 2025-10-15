@@ -1,5 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Trash2, FileText, Download } from "lucide-react";
 import {
   AlertDialog,
@@ -16,6 +17,8 @@ import {
 interface LaborData {
   id: string;
   name: string;
+  photo?: string;
+  address?: string;
   dailyRate: number;
   totalDaily: number;
   totalDuty: number;
@@ -69,11 +72,24 @@ export default function LaborTable({ laborers, onDelete, onPdfPreview, onPdfDown
           {laborers.map((labor) => (
             <TableRow key={labor.id} data-testid={`row-labor-${labor.id}`} className="hover-elevate">
               <TableCell data-testid={`text-name-${labor.id}`}>
-                <div className="font-medium">{labor.name}</div>
-                <div className="sm:hidden text-xs text-muted-foreground mt-1 space-y-0.5">
-                  <div>Daily: {labor.totalDaily}</div>
-                  <div>Duty: ₹{labor.totalDuty.toLocaleString()}</div>
-                  <div>Advance: ₹{labor.totalAdvance.toLocaleString()}</div>
+                <div className="flex items-center gap-3">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={labor.photo} alt={labor.name} />
+                    <AvatarFallback>{labor.name.slice(0, 2).toUpperCase()}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <div className="font-medium">{labor.name}</div>
+                    {labor.address && (
+                      <div className="text-xs text-muted-foreground mt-0.5 line-clamp-1" title={labor.address}>
+                        {labor.address}
+                      </div>
+                    )}
+                    <div className="sm:hidden text-xs text-muted-foreground mt-1 space-y-0.5">
+                      <div>Daily: {labor.totalDaily}</div>
+                      <div>Duty: ₹{labor.totalDuty.toLocaleString()}</div>
+                      <div>Advance: ₹{labor.totalAdvance.toLocaleString()}</div>
+                    </div>
+                  </div>
                 </div>
               </TableCell>
               <TableCell className="text-right tabular-nums hidden md:table-cell" data-testid={`text-daily-${labor.id}`}>
