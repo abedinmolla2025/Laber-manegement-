@@ -67,13 +67,13 @@ export default function AddLaborDialog({ onAdd }: AddLaborDialogProps) {
       
       img.onload = () => {
         imageRef.current = img;
-        const maxSize = 300;
+        const maxSize = 400;
         const scale = Math.min(maxSize / img.width, maxSize / img.height);
         canvas.width = img.width * scale;
         canvas.height = img.height * scale;
         
-        // Initialize crop to center
-        const cropSize = Math.min(canvas.width, canvas.height) * 0.7;
+        // Initialize crop to center - larger crop area (85%)
+        const cropSize = Math.min(canvas.width, canvas.height) * 0.85;
         setCrop({
           x: (canvas.width - cropSize) / 2,
           y: (canvas.height - cropSize) / 2,
@@ -126,8 +126,34 @@ export default function AddLaborDialog({ onAdd }: AddLaborDialogProps) {
     
     // Draw crop border
     ctx.strokeStyle = '#3b82f6';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 3;
     ctx.strokeRect(crop.x, crop.y, crop.size, crop.size);
+    
+    // Draw corner handles
+    const handleSize = 12;
+    ctx.fillStyle = '#3b82f6';
+    // Top-left corner
+    ctx.fillRect(crop.x - handleSize/2, crop.y - handleSize/2, handleSize, handleSize);
+    // Top-right corner
+    ctx.fillRect(crop.x + crop.size - handleSize/2, crop.y - handleSize/2, handleSize, handleSize);
+    // Bottom-left corner
+    ctx.fillRect(crop.x - handleSize/2, crop.y + crop.size - handleSize/2, handleSize, handleSize);
+    // Bottom-right corner
+    ctx.fillRect(crop.x + crop.size - handleSize/2, crop.y + crop.size - handleSize/2, handleSize, handleSize);
+    
+    // Draw center crosshair
+    ctx.strokeStyle = '#3b82f6';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([5, 5]);
+    const centerX = crop.x + crop.size / 2;
+    const centerY = crop.y + crop.size / 2;
+    ctx.beginPath();
+    ctx.moveTo(centerX, crop.y);
+    ctx.lineTo(centerX, crop.y + crop.size);
+    ctx.moveTo(crop.x, centerY);
+    ctx.lineTo(crop.x + crop.size, centerY);
+    ctx.stroke();
+    ctx.setLineDash([]);
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
