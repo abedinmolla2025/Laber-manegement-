@@ -28,9 +28,10 @@ interface LaborData {
 interface LaborTableProps {
   laborers: LaborData[];
   onDelete: (id: string) => void;
+  onPdfPreview: (labor: LaborData) => void;
 }
 
-export default function LaborTable({ laborers, onDelete }: LaborTableProps) {
+export default function LaborTable({ laborers, onDelete, onPdfPreview }: LaborTableProps) {
   if (laborers.length === 0) {
     return (
       <div className="text-center py-20 border rounded-lg bg-card">
@@ -98,6 +99,7 @@ export default function LaborTable({ laborers, onDelete }: LaborTableProps) {
                     size="icon"
                     data-testid={`button-pdf-${labor.id}`}
                     title="View PDF Report"
+                    onClick={() => onPdfPreview(labor)}
                   >
                     <FileText className="h-4 w-4" />
                   </Button>
