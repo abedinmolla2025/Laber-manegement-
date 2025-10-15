@@ -32,29 +32,96 @@ export interface IStorage {
   deleteAdvanceEntry(id: string): Promise<boolean>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User>;
+import { drizzle } from "drizzle-orm/neon-serverless";
+import { eq } from "drizzle-orm";
+import { Pool } from "@neondatabase/serverless";
+import { 
+  users, 
+  laborers, 
+  dutyEntries, 
+  advanceEntries 
+} from "@shared/schema";
 
-  constructor() {
-    this.users = new Map();
-  }
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const db = drizzle(pool);
 
+export class DbStorage implements IStorage {
   async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+    const result = await db.select().from(users).where(eq(users.id, id));
+    return result[0];
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    const result = await db.select().from(users).where(eq(users.username, username));
+    return result[0];
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+    const result = await db.insert(users).values(insertUser).returning();
+    return result[0];
+  }
+
+  async getAllLaborers(): Promise<Laborer[]> {
+    return await db.select().from(laborers);
+  }
+
+  async getLaborer(id: string): Promise<Laborer | undefined> {
+    const result = await db.select().from(laborers).where(eq(laborers.id, id));
+    return result[0];
+  }
+
+  async createLaborer(laborer: InsertLaborer): Promise<Laborer> {
+    const result = await db.insert(laborers).values(laborer).returning();
+    return result[0];
+  }
+
+  async updateLaborer(id: string, laborer: Partial<InsertLaborer>): Promise<Laborer | undefined> {
+    const result = await db.update(laborers).set(laborer).where(eq(laborers.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteLaborer(id: string): Promise<boolean> {
+    const result = await db.delete(laborers).where(eq(laborers.id, id)).returning();
+    return result.length > 0;
+  }
+
+  async getDutyEntriesByLaborer(laborerId: string): Promise<DutyEntry[]> {
+    return await db.select().from(dutyEntries).where(eq(dutyEntries.laborerId, laborerId));
+  }
+
+  async createDutyEntry(entry: InsertDutyEntry): Promise<DutyEntry> {
+    const result = await db.insert(dutyEntries).values(entry).returning();
+    return result[0];
+  }
+
+  async updateDutyEntry(id: string, entry: Partial<InsertDutyEntry>): Promise<DutyEntry | undefined> {
+    const result = await db.update(dutyEntries).set(entry).where(eq(dutyEntries.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteDutyEntry(id: string): Promise<boolean> {
+    const result = await db.delete(dutyEntries).where(eq(dutyEntries.id, id)).returning();
+    return result.length > 0;
+  }
+
+  async getAdvanceEntriesByLaborer(laborerId: string): Promise<AdvanceEntry[]> {
+    return await db.select().from(advanceEntries).where(eq(advanceEntries.laborerId, laborerId));
+  }
+
+  async createAdvanceEntry(entry: InsertAdvanceEntry): Promise<AdvanceEntry> {
+    const result = await db.insert(advanceEntries).values(entry).returning();
+    return result[0];
+  }
+
+  async updateAdvanceEntry(id: string, entry: Partial<InsertAdvanceEntry>): Promise<AdvanceEntry | undefined> {
+    const result = await db.update(advanceEntries).set(entry).where(eq(advanceEntries.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteAdvanceEntry(id: string): Promise<boolean> {
+    const result = await db.delete(advanceEntries).where(eq(advanceEntries.id, id)).returning();
+    return result.length > 0;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DbStorage();
