@@ -233,12 +233,7 @@ export const generateLaborPDF = async (labor: Labor) => {
   
   doc.text(`Total Duty Days:`, leftCol, finalY + 14);
   doc.setFont('helvetica', 'bold');
-  doc.text(`${labor.totalDaily} days`, leftCol + 55, finalY + 14);
-  
-  doc.setFont('helvetica', 'normal');
-  doc.text(`Total Duty:`, leftCol, finalY + 24);
-  doc.setFont('helvetica', 'bold');
-  doc.text(`₹${labor.totalDuty.toLocaleString()}`, leftCol + 45, finalY + 24);
+  doc.text(`₹${labor.totalDuty.toLocaleString()}`, leftCol + 60, finalY + 14);
   
   doc.setFont('helvetica', 'normal');
   doc.text(`Total Advance:`, rightCol, finalY + 14);
@@ -246,6 +241,7 @@ export const generateLaborPDF = async (labor: Labor) => {
   doc.text(`₹${labor.totalAdvance.toLocaleString()}`, rightCol + 50, finalY + 14);
   
   doc.setFont('helvetica', 'normal');
+  doc.setTextColor(0, 0, 0);
   doc.text(`Net Payable:`, rightCol, finalY + 24);
   doc.setFont('helvetica', 'bold');
   if (netPayable >= 0) {
