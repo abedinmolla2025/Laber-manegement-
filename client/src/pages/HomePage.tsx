@@ -13,6 +13,8 @@ interface Labor {
   id: string;
   name: string;
   dailyRate: number;
+  photo?: string;
+  address?: string;
   totalDaily: number;
   totalDuty: number;
   totalAdvance: number;
@@ -75,11 +77,13 @@ export default function HomePage() {
     },
   ]);
 
-  const handleAddLabor = (name: string, dailyRate: number) => {
+  const handleAddLabor = (name: string, dailyRate: number, photo?: string, address?: string) => {
     const newLabor: Labor = {
       id: Date.now().toString(),
       name,
       dailyRate,
+      photo,
+      address,
       totalDaily: 0,
       totalDuty: 0,
       totalAdvance: 0,
@@ -174,6 +178,8 @@ export default function HomePage() {
   const laborTableData = filteredLaborers.map(labor => ({
     id: labor.id,
     name: labor.name,
+    photo: labor.photo,
+    address: labor.address,
     totalDaily: labor.totalDaily,
     totalDuty: labor.totalDuty,
     totalAdvance: labor.totalAdvance,
