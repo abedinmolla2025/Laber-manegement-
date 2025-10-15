@@ -7,7 +7,7 @@ import AddAdvanceDialog from "@/components/AddAdvanceDialog";
 import ThemeToggle from "@/components/ThemeToggle";
 import SearchBar from "@/components/SearchBar";
 import { useToast } from "@/hooks/use-toast";
-import { previewLaborPDF } from "@/lib/pdfGenerator";
+import { previewLaborPDF, downloadLaborPDF } from "@/lib/pdfGenerator";
 
 interface Labor {
   id: string;
@@ -151,6 +151,14 @@ export default function HomePage() {
     });
   };
 
+  const handlePdfDownload = (labor: any) => {
+    downloadLaborPDF(labor);
+    toast({
+      title: "PDF Downloaded",
+      description: `Report for ${labor.name} has been downloaded`,
+    });
+  };
+
   const filteredLaborers = useMemo(() => {
     if (!searchQuery.trim()) return laborers;
     return laborers.filter(labor =>
@@ -213,7 +221,7 @@ export default function HomePage() {
               {searchQuery && ` matching "${searchQuery}"`}
             </p>
           </div>
-          <LaborTable laborers={laborTableData} onDelete={handleDeleteLabor} onPdfPreview={handlePdfPreview} />
+          <LaborTable laborers={laborTableData} onDelete={handleDeleteLabor} onPdfPreview={handlePdfPreview} onPdfDownload={handlePdfDownload} />
         </div>
       </main>
     </div>

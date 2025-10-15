@@ -29,9 +29,10 @@ interface LaborTableProps {
   laborers: LaborData[];
   onDelete: (id: string) => void;
   onPdfPreview: (labor: LaborData) => void;
+  onPdfDownload: (labor: LaborData) => void;
 }
 
-export default function LaborTable({ laborers, onDelete, onPdfPreview }: LaborTableProps) {
+export default function LaborTable({ laborers, onDelete, onPdfPreview, onPdfDownload }: LaborTableProps) {
   if (laborers.length === 0) {
     return (
       <div className="text-center py-20 border rounded-lg bg-card">
@@ -97,11 +98,20 @@ export default function LaborTable({ laborers, onDelete, onPdfPreview }: LaborTa
                   <Button
                     variant="ghost"
                     size="icon"
-                    data-testid={`button-pdf-${labor.id}`}
-                    title="View PDF Report"
+                    data-testid={`button-pdf-preview-${labor.id}`}
+                    title="Preview PDF Report"
                     onClick={() => onPdfPreview(labor)}
                   >
                     <FileText className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    data-testid={`button-pdf-download-${labor.id}`}
+                    title="Download PDF Report"
+                    onClick={() => onPdfDownload(labor)}
+                  >
+                    <Download className="h-4 w-4" />
                   </Button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>

@@ -16,15 +16,29 @@ export const generateLaborPDF = (labor: Labor) => {
   const doc = new jsPDF();
   
   const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
   
-  doc.setFontSize(20);
-  doc.text('Labor Management', pageWidth / 2, 20, { align: 'center' });
+  // Header background
+  doc.setFillColor(59, 130, 246);
+  doc.rect(0, 0, pageWidth, 50, 'F');
   
+  // Title
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(22);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Labor Management Report', pageWidth / 2, 18, { align: 'center' });
+  
+  // Laborer name
   doc.setFontSize(16);
-  doc.text(`Laborer: ${labor.name}`, pageWidth / 2, 35, { align: 'center' });
+  doc.text(`${labor.name}`, pageWidth / 2, 32, { align: 'center' });
   
-  doc.setFontSize(10);
-  doc.text(`Daily Rate: ₹${labor.dailyRate}`, pageWidth / 2, 45, { align: 'center' });
+  // Daily rate
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`Daily Rate: ₹${labor.dailyRate.toLocaleString()}`, pageWidth / 2, 42, { align: 'center' });
+  
+  // Reset text color for content
+  doc.setTextColor(0, 0, 0);
   
   const mergedEntries: Array<{ 
     date: string; 
@@ -59,44 +73,101 @@ export const generateLaborPDF = (labor: Labor) => {
   ]);
   
   autoTable(doc, {
-    startY: 55,
+    startY: 60,
     head: [['Date', 'Daily', 'Rate', 'Advance']],
     body: tableData,
-    theme: 'striped',
+    theme: 'grid',
     headStyles: {
-      fillColor: [59, 130, 246],
+      fillColor: [30, 58, 138],
       textColor: [255, 255, 255],
       fontSize: 11,
       fontStyle: 'bold',
-      halign: 'center'
+      halign: 'center',
+      cellPadding: 5,
+      lineWidth: 0.5,
+      lineColor: [200, 200, 200]
     },
     bodyStyles: {
       fontSize: 10,
-      halign: 'center'
+      cellPadding: 4,
+      lineWidth: 0.3,
+      lineColor: [220, 220, 220]
     },
     alternateRowStyles: {
-      fillColor: [245, 245, 245]
+      fillColor: [248, 250, 252]
     },
     columnStyles: {
-      0: { halign: 'left' },
-      1: { halign: 'center' },
-      2: { halign: 'right' },
-      3: { halign: 'right' }
+      0: { halign: 'left', cellWidth: 50 },
+      1: { halign: 'center', cellWidth: 30 },
+      2: { halign: 'right', cellWidth: 50 },
+      3: { halign: 'right', cellWidth: 50 }
     },
-    margin: { left: 15, right: 15 }
+    margin: { left: 15, right: 15 },
+    styles: {
+      overflow: 'linebreak',
+      cellWidth: 'wrap'
+    }
   });
   
-  const finalY = (doc as any).lastAutoTable.finalY + 10;
+  const finalY = (doc as any).lastAutoTable.finalY + 15;
   
-  doc.setFontSize(12);
+  // Summary box
+  doc.setDrawColor(59, 130, 246);
+  doc.setLineWidth(0.5);
+  doc.roundedRect(15, finalY - 5, pageWidth - 30, 45, 3, 3, 'S');
+  
+  // Summary title
+  doc.setFontSize(13);
   doc.setFont('helvetica', 'bold');
+  doc.setTextColor(30, 58, 138);
+  doc.text('Summary', 20, finalY + 3);
+  
+  // Summary details
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(0, 0, 0);
   
   const netPayable = labor.totalDuty - labor.totalAdvance;
+  const leftCol = 20;
+  const rightCol = pageWidth / 2 + 10;
   
-  doc.text(`Total Daily: ${labor.totalDaily}`, 15, finalY);
-  doc.text(`Total Duty: ₹${labor.totalDuty}`, 15, finalY + 8);
-  doc.text(`Total Advance: ₹${labor.totalAdvance}`, 15, finalY + 16);
-  doc.text(`Net Payable: ₹${netPayable}`, 15, finalY + 24);
+  doc.text(`Total Daily:`, leftCol, finalY + 14);
+  doc.setFont('helvetica', 'bold');
+  doc.text(`${labor.totalDaily}`, leftCol + 45, finalY + 14);
+  
+  doc.setFont('helvetica', 'normal');
+  doc.text(`Total Duty:`, leftCol, finalY + 24);
+  doc.setFont('helvetica', 'bold');
+  doc.text(`₹${labor.totalDuty.toLocaleString()}`, leftCol + 45, finalY + 24);
+  
+  doc.setFont('helvetica', 'normal');
+  doc.text(`Total Advance:`, rightCol, finalY + 14);
+  doc.setFont('helvetica', 'bold');
+  doc.text(`₹${labor.totalAdvance.toLocaleString()}`, rightCol + 50, finalY + 14);
+  
+  doc.setFont('helvetica', 'normal');
+  doc.text(`Net Payable:`, rightCol, finalY + 24);
+  doc.setFont('helvetica', 'bold');
+  if (netPayable >= 0) {
+    doc.setTextColor(34, 197, 94);
+  } else {
+    doc.setTextColor(239, 68, 68);
+  }
+  doc.text(`₹${netPayable.toLocaleString()}`, rightCol + 50, finalY + 24);
+  
+  // Footer
+  doc.setTextColor(128, 128, 128);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  const currentDate = new Date().toLocaleDateString('en-IN', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+  doc.text(`Generated on: ${currentDate}`, pageWidth / 2, pageHeight - 15, { align: 'center' });
+  doc.text('Labor Management System', pageWidth / 2, pageHeight - 10, { align: 'center' });
   
   return doc;
 };
