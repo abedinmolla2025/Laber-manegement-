@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus } from "lucide-react";
+import { Plus, Upload } from "lucide-react";
 
 interface AddLaborDialogProps {
   onAdd: (name: string, dailyRate: number, photo?: string, address?: string) => void;
@@ -15,7 +15,20 @@ export default function AddLaborDialog({ onAdd }: AddLaborDialogProps) {
   const [name, setName] = useState("");
   const [dailyRate, setDailyRate] = useState("");
   const [photo, setPhoto] = useState("");
+  const [photoFileName, setPhotoFileName] = useState("");
   const [address, setAddress] = useState("");
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      setPhotoFileName(file.name);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhoto(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,12 +37,13 @@ export default function AddLaborDialog({ onAdd }: AddLaborDialogProps) {
       onAdd(
         name.trim(), 
         rate, 
-        photo.trim() || undefined, 
+        photo || undefined, 
         address.trim() || undefined
       );
       setName("");
       setDailyRate("");
       setPhoto("");
+      setPhotoFileName("");
       setAddress("");
       setOpen(false);
     }
@@ -75,14 +89,37 @@ export default function AddLaborDialog({ onAdd }: AddLaborDialogProps) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="photo">Photo URL</Label>
-            <Input
-              id="photo"
-              data-testid="input-photo-url"
-              value={photo}
-              onChange={(e) => setPhoto(e.target.value)}
-              placeholder="Enter photo URL (optional)"
-            />
+            <Label htmlFor="photo">Photo</Label>
+            <div className="flex items-center gap-2">
+              <Input
+                id="photo"
+                data-testid="input-photo-file"
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoUpload}
+                className="hidden"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => document.getElementById('photo')?.click()}
+                className="w-full"
+                data-testid="button-upload-photo"
+              >
+                <Upload className="h-4 w-4 mr-2" />
+                {photoFileName || "Upload Photo (Optional)"}
+              </Button>
+            </div>
+            {photo && (
+              <div className="mt-2 flex justify-center">
+                <img 
+                  src={photo} 
+                  alt="Preview" 
+                  className="h-20 w-20 rounded-full object-cover border-2"
+                  data-testid="img-photo-preview"
+                />
+              </div>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="address">Address</Label>
