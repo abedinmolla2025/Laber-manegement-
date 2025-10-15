@@ -14,7 +14,22 @@ interface Labor {
   advanceEntries: Array<{ date: string; amount: number }>;
 }
 
-export const generateLaborPDF = (labor: Labor) => {
+const loadImageAsBase64 = async (url: string): Promise<string | null> => {
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = () => resolve(null);
+      reader.readAsDataURL(blob);
+    });
+  } catch {
+    return null;
+  }
+};
+
+export const generateLaborPDF = async (labor: Labor) => {
   const doc = new jsPDF();
   
   const pageWidth = doc.internal.pageSize.getWidth();
@@ -24,6 +39,43 @@ export const generateLaborPDF = (labor: Labor) => {
   const headerHeight = labor.address ? 60 : 50;
   doc.setFillColor(59, 130, 246);
   doc.rect(0, 0, pageWidth, headerHeight, 'F');
+  
+  // Add photo or initials fallback
+  const photoSize = 20;
+  const photoX = 15;
+  const photoY = 15;
+  
+  doc.setFillColor(255, 255, 255);
+  doc.circle(photoX + photoSize/2, photoY + photoSize/2, photoSize/2, 'F');
+  
+  if (labor.photo) {
+    const photoData = await loadImageAsBase64(labor.photo);
+    if (photoData) {
+      try {
+        // Detect format from data URL
+        const format = photoData.includes('image/png') ? 'PNG' : 'JPEG';
+        doc.addImage(photoData, format, photoX, photoY, photoSize, photoSize, undefined, 'NONE');
+      } catch {
+        // If image fails to load, show initials instead
+        doc.setTextColor(59, 130, 246);
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'bold');
+        doc.text(labor.name.slice(0, 2).toUpperCase(), photoX + photoSize/2, photoY + photoSize/2 + 3, { align: 'center' });
+      }
+    } else {
+      // Photo URL failed to load, show initials
+      doc.setTextColor(59, 130, 246);
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'bold');
+      doc.text(labor.name.slice(0, 2).toUpperCase(), photoX + photoSize/2, photoY + photoSize/2 + 3, { align: 'center' });
+    }
+  } else {
+    // No photo provided, show initials
+    doc.setTextColor(59, 130, 246);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text(labor.name.slice(0, 2).toUpperCase(), photoX + photoSize/2, photoY + photoSize/2 + 3, { align: 'center' });
+  }
   
   // Title
   doc.setTextColor(255, 255, 255);
@@ -40,10 +92,11 @@ export const generateLaborPDF = (labor: Labor) => {
   doc.setFont('helvetica', 'normal');
   doc.text(`Daily Rate: ₹${labor.dailyRate.toLocaleString()}`, pageWidth / 2, 42, { align: 'center' });
   
-  // Address if available
+  // Address if available - handle long addresses with text wrapping
   if (labor.address) {
     doc.setFontSize(10);
-    doc.text(`Address: ${labor.address}`, pageWidth / 2, 52, { align: 'center' });
+    const addressLines = doc.splitTextToSize(`Address: ${labor.address}`, pageWidth - 30);
+    doc.text(addressLines, pageWidth / 2, 52, { align: 'center' });
   }
   
   // Reset text color for content
@@ -189,14 +242,14 @@ export const generateLaborPDF = (labor: Labor) => {
   return doc;
 };
 
-export const previewLaborPDF = (labor: Labor) => {
-  const doc = generateLaborPDF(labor);
+export const previewLaborPDF = async (labor: Labor) => {
+  const doc = await generateLaborPDF(labor);
   const pdfBlob = doc.output('blob');
   const pdfUrl = URL.createObjectURL(pdfBlob);
   window.open(pdfUrl, '_blank');
 };
 
-export const downloadLaborPDF = (labor: Labor) => {
-  const doc = generateLaborPDF(labor);
+export const downloadLaborPDF = async (labor: Labor) => {
+  const doc = await generateLaborPDF(labor);
   doc.save(`${labor.name.replace(/\s+/g, '_')}_labor_report.pdf`);
 };
