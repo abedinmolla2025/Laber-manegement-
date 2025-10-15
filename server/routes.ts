@@ -73,7 +73,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const laborer = await storage.createLaborer(validatedData);
       res.status(201).json(laborer);
     } catch (error) {
-      res.status(400).json({ error: "Invalid laborer data" });
+      console.error("Validation error:", error);
+      res.status(400).json({ error: "Invalid laborer data", details: error });
     }
   });
 

@@ -32,9 +32,9 @@ export interface IStorage {
   deleteAdvanceEntry(id: string): Promise<boolean>;
 }
 
-import { drizzle } from "drizzle-orm/neon-serverless";
+import { drizzle } from "drizzle-orm/postgres-js";
 import { eq } from "drizzle-orm";
-import { Pool } from "@neondatabase/serverless";
+import postgres from "postgres";
 import { 
   users, 
   laborers, 
@@ -42,10 +42,8 @@ import {
   advanceEntries 
 } from "@shared/schema";
 
-const pool = new Pool({ 
-  connectionString: `${process.env.DATABASE_URL}?sslmode=require`
-});
-const db = drizzle(pool);
+const queryClient = postgres(process.env.DATABASE_URL!);
+const db = drizzle(queryClient);
 
 export class DbStorage implements IStorage {
   async getUser(id: string): Promise<User | undefined> {

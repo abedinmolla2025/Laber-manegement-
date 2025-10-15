@@ -27,6 +27,8 @@ export const laborers = pgTable("laborers", {
 
 export const insertLaborerSchema = createInsertSchema(laborers).omit({
   id: true,
+}).extend({
+  dailyRate: z.union([z.string(), z.number()]).transform(val => String(val)),
 });
 
 export type InsertLaborer = z.infer<typeof insertLaborerSchema>;
@@ -42,6 +44,9 @@ export const dutyEntries = pgTable("duty_entries", {
 
 export const insertDutyEntrySchema = createInsertSchema(dutyEntries).omit({
   id: true,
+}).extend({
+  daily: z.union([z.string(), z.number()]).transform(val => String(val)),
+  amount: z.union([z.string(), z.number()]).transform(val => String(val)),
 });
 
 export type InsertDutyEntry = z.infer<typeof insertDutyEntrySchema>;
@@ -56,6 +61,8 @@ export const advanceEntries = pgTable("advance_entries", {
 
 export const insertAdvanceEntrySchema = createInsertSchema(advanceEntries).omit({
   id: true,
+}).extend({
+  amount: z.union([z.string(), z.number()]).transform(val => String(val)),
 });
 
 export type InsertAdvanceEntry = z.infer<typeof insertAdvanceEntrySchema>;
