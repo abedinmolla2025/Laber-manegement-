@@ -110,7 +110,7 @@ export const generateLaborPDF = async (labor: Labor) => {
   if (labor.address) {
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
-    const addressLines = doc.splitTextToSize(`📍 ${labor.address}`, pageWidth - infoX - 20);
+    const addressLines = doc.splitTextToSize(`Address: ${labor.address}`, pageWidth - infoX - 20);
     doc.text(addressLines, infoX, profileY + 34);
   }
   
