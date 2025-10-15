@@ -144,7 +144,7 @@ PDF Table Headers: Date | Day | Daily | Rate | Advance
 [x] 64. Use Romanized Bengali for day names (jsPDF limitation) - COMPLETED ✓
 [x] 65. Test PDF with Romanized Bengali day names - COMPLETED ✓
 
-**সমাধান:** jsPDF Bengali script support করে না বলে Romanized Bengali ব্যবহার করা হয়েছে:
-- Robibar (রবিবার), Shombar (সোমবার), Mongolbar (মঙ্গলবার), 
-- Budhbar (বুধবার), Brihoshpotibar (বৃহস্পতিবার), 
-- Shukrobar (শুক্রবার), Shonibar (শনিবার)
+**সমাধান:** English day names ব্যবহার করা হয়েছে:
+- Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday
+
+[x] 66. Change to English day names (Sunday, Monday, etc.) - COMPLETED ✓

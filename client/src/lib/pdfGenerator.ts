@@ -117,9 +117,8 @@ export const generateLaborPDF = async (labor: Labor) => {
   // Reset text color for content
   doc.setTextColor(0, 0, 0);
   
-  const getBengaliDay = (date: Date): string => {
-    // Using Romanized Bengali since jsPDF doesn't support Bengali script without custom fonts
-    const days = ['Robibar', 'Shombar', 'Mongolbar', 'Budhbar', 'Brihoshpotibar', 'Shukrobar', 'Shonibar'];
+  const getDayName = (date: Date): string => {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     return days[date.getDay()];
   };
 
@@ -161,11 +160,11 @@ export const generateLaborPDF = async (labor: Labor) => {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = String(date.getFullYear()).slice(-2);
     const formattedDate = `${day}/${month}/${year}`;
-    const bengaliDay = getBengaliDay(date);
+    const dayName = getDayName(date);
     
     return [
       formattedDate,
-      bengaliDay,
+      dayName,
       entry.daily,
       entry.rate,
       entry.advance
