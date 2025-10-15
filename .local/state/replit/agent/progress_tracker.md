@@ -162,19 +162,10 @@ PDF Table Headers: Date | Day | Daily | Rate | Advance
 - Photo (ছবি) - cropping সহ
 - Address (ঠিকানা)
 
-## PDF Summary Update
+## PDF Summary Update - Previous
 [x] 72. Change "Total Daily" to "Total Duty Days" in PDF summary - COMPLETED ✓
 [x] 73. Show "X days" format for total duty days - COMPLETED ✓
 [x] 74. Test PDF summary display - COMPLETED ✓
-
-**PDF Summary এখন এভাবে দেখাবে:**
-বাম কলাম:
-- Total Duty Days: ₹12,000
-
-ডান কলাম:
-- Total Advance: ₹5,000
-- Net Payable: ₹7,000
-
 [x] 75. Update PDF summary layout - COMPLETED ✓
 
 ---
@@ -186,7 +177,24 @@ PDF Table Headers: Date | Day | Daily | Rate | Advance
 [x] 80. Update progress tracker with all completions - COMPLETED ✓
 [x] 81. Mark project import as complete - COMPLETED ✓
 
+## PDF Summary Fix - Current Session
+[x] 82. Add Total Daily to PDF Summary (কতগুলো daily entry) - COMPLETED ✓
+[x] 83. Show Total Duty as days count (কত দিন কাজ করেছে) - COMPLETED ✓
+[x] 84. Update Net Payable calculation (Total Duty × Daily Rate - Total Advance) - COMPLETED ✓
+[x] 85. Verify application running with no errors - COMPLETED ✓
+
+**PDF Summary এখন এভাবে দেখাবে:**
+
+বাম কলাম:
+- Total Daily: 15 (কতগুলো daily entry)
+- Total Duty: 12 days (কত দিন কাজ করেছে)
+
+ডান কলাম:
+- Total Advance: ₹5,000
+- Net Payable: ₹7,000 (Total Duty × Daily Rate - Total Advance)
+
 ✅ **FINAL STATUS: ALL MIGRATION TASKS COMPLETE**
 Server running on port 5000 ✓
 All features operational ✓
+PDF Summary fixed ✓
 Ready for production use ✓
