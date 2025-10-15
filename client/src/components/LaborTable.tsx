@@ -40,15 +40,15 @@ interface LaborTableProps {
 export default function LaborTable({ laborers, onEdit, onDelete, onPdfPreview, onPdfDownload }: LaborTableProps) {
   if (laborers.length === 0) {
     return (
-      <div className="text-center py-20 border rounded-lg bg-card">
-        <div className="max-w-md mx-auto space-y-4">
-          <div className="w-16 h-16 mx-auto rounded-full bg-muted flex items-center justify-center">
-            <Trash2 className="h-8 w-8 text-muted-foreground" />
+      <div className="text-center py-24 border-2 border-dashed rounded-xl bg-card/50">
+        <div className="max-w-md mx-auto space-y-6">
+          <div className="w-20 h-20 mx-auto rounded-full bg-primary/10 flex items-center justify-center">
+            <Trash2 className="h-10 w-10 text-primary" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold mb-2">No Laborers Found</h3>
-            <p className="text-sm text-muted-foreground">
-              Add your first laborer to start tracking duties and advance payments.
+            <h3 className="text-xl font-semibold mb-2">No Laborers Found</h3>
+            <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+              Get started by adding your first laborer to track duties and advance payments efficiently.
             </p>
           </div>
         </div>
@@ -57,22 +57,22 @@ export default function LaborTable({ laborers, onEdit, onDelete, onPdfPreview, o
   }
 
   return (
-    <div className="border rounded-lg overflow-hidden bg-card">
+    <div className="border rounded-xl overflow-hidden bg-card shadow-sm">
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow className="hover:bg-transparent">
+            <TableRow className="hover:bg-transparent bg-muted/50">
               <TableHead className="font-semibold w-[200px] sm:w-auto">Labor Name</TableHead>
               <TableHead className="text-right font-semibold hidden md:table-cell">Total Daily</TableHead>
               <TableHead className="text-right font-semibold hidden sm:table-cell">Total Duty</TableHead>
               <TableHead className="text-right font-semibold hidden sm:table-cell">Total Advance</TableHead>
               <TableHead className="text-right font-semibold">Net Payable</TableHead>
-              <TableHead className="text-center font-semibold w-[120px]">Actions</TableHead>
+              <TableHead className="text-center font-semibold w-[140px]">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
           {laborers.map((labor) => (
-            <TableRow key={labor.id} data-testid={`row-labor-${labor.id}`} className="hover-elevate">
+            <TableRow key={labor.id} data-testid={`row-labor-${labor.id}`} className="hover-elevate transition-colors">
               <TableCell data-testid={`text-name-${labor.id}`}>
                 <div className="flex items-center gap-3">
                   <Avatar className="h-10 w-10">
