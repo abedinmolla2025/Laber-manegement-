@@ -148,3 +148,16 @@ PDF Table Headers: Date | Day | Daily | Rate | Advance
 - Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday
 
 [x] 66. Change to English day names (Sunday, Monday, etc.) - COMPLETED ✓
+
+## Edit Daily Rate Feature
+[x] 67. Check if daily rate can be edited currently - COMPLETED ✓
+[x] 68. Add edit daily rate functionality - COMPLETED ✓
+[x] 69. Create EditLaborDialog component - COMPLETED ✓
+[x] 70. Add Edit button to LaborTable - COMPLETED ✓
+[x] 71. Test editing daily rate and other labor details - COMPLETED ✓
+
+**সম্পন্ন:** এখন যেকোনো সময় Labor-এর সব তথ্য edit করা যাবে:
+- Name (নাম)
+- Daily Rate (দৈনিক হার)
+- Photo (ছবি) - cropping সহ
+- Address (ঠিকানা)

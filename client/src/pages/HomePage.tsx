@@ -137,6 +137,26 @@ export default function HomePage() {
     });
   };
 
+  const handleEditLabor = (id: string, name: string, dailyRate: number, photo?: string, address?: string) => {
+    setLaborers(laborers.map(labor => {
+      if (labor.id === id) {
+        return {
+          ...labor,
+          name,
+          dailyRate,
+          photo,
+          address
+        };
+      }
+      return labor;
+    }));
+    const labor = laborers.find(l => l.id === id);
+    toast({
+      title: "Labor Updated",
+      description: `${name} details have been updated successfully.`,
+    });
+  };
+
   const handleDeleteLabor = (id: string) => {
     const labor = laborers.find(l => l.id === id);
     setLaborers(laborers.filter(l => l.id !== id));
@@ -227,7 +247,7 @@ export default function HomePage() {
               {searchQuery && ` matching "${searchQuery}"`}
             </p>
           </div>
-          <LaborTable laborers={laborTableData} onDelete={handleDeleteLabor} onPdfPreview={handlePdfPreview} onPdfDownload={handlePdfDownload} />
+          <LaborTable laborers={laborTableData} onEdit={handleEditLabor} onDelete={handleDeleteLabor} onPdfPreview={handlePdfPreview} onPdfDownload={handlePdfDownload} />
         </div>
       </main>
     </div>

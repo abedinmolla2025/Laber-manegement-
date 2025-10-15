@@ -2,6 +2,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Trash2, FileText, Download } from "lucide-react";
+import EditLaborDialog from "./EditLaborDialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,12 +31,13 @@ interface LaborData {
 
 interface LaborTableProps {
   laborers: LaborData[];
+  onEdit: (id: string, name: string, dailyRate: number, photo?: string, address?: string) => void;
   onDelete: (id: string) => void;
   onPdfPreview: (labor: LaborData) => void;
   onPdfDownload: (labor: LaborData) => void;
 }
 
-export default function LaborTable({ laborers, onDelete, onPdfPreview, onPdfDownload }: LaborTableProps) {
+export default function LaborTable({ laborers, onEdit, onDelete, onPdfPreview, onPdfDownload }: LaborTableProps) {
   if (laborers.length === 0) {
     return (
       <div className="text-center py-20 border rounded-lg bg-card">
@@ -111,6 +113,16 @@ export default function LaborTable({ laborers, onDelete, onPdfPreview, onPdfDown
               </TableCell>
               <TableCell className="text-center">
                 <div className="flex items-center justify-center gap-1">
+                  <EditLaborDialog 
+                    labor={{
+                      id: labor.id,
+                      name: labor.name,
+                      dailyRate: labor.dailyRate,
+                      photo: labor.photo,
+                      address: labor.address
+                    }}
+                    onEdit={onEdit}
+                  />
                   <Button
                     variant="ghost"
                     size="icon"
