@@ -117,6 +117,11 @@ export const generateLaborPDF = async (labor: Labor) => {
   // Reset text color for content
   doc.setTextColor(0, 0, 0);
   
+  const getBengaliDay = (date: Date): string => {
+    const days = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
+    return days[date.getDay()];
+  };
+
   const mergedEntries: Array<{ 
     date: string; 
     daily: number | string; 
@@ -148,9 +153,11 @@ export const generateLaborPDF = async (labor: Labor) => {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = String(date.getFullYear()).slice(-2);
     const formattedDate = `${day}/${month}/${year}`;
+    const bengaliDay = getBengaliDay(date);
     
     return [
       formattedDate,
+      bengaliDay,
       entry.daily,
       entry.rate,
       entry.advance
@@ -159,7 +166,7 @@ export const generateLaborPDF = async (labor: Labor) => {
   
   autoTable(doc, {
     startY: profileY + profileHeight + 10,
-    head: [['Date', 'Daily', 'Rate', 'Advance']],
+    head: [['Date', 'Day', 'Daily', 'Rate', 'Advance']],
     body: tableData,
     theme: 'grid',
     headStyles: {
@@ -182,10 +189,11 @@ export const generateLaborPDF = async (labor: Labor) => {
       fillColor: [248, 250, 252]
     },
     columnStyles: {
-      0: { halign: 'left', cellWidth: 50 },
-      1: { halign: 'center', cellWidth: 30 },
-      2: { halign: 'center', cellWidth: 50 },
-      3: { halign: 'center', cellWidth: 50 }
+      0: { halign: 'left', cellWidth: 35 },
+      1: { halign: 'center', cellWidth: 40 },
+      2: { halign: 'center', cellWidth: 25 },
+      3: { halign: 'center', cellWidth: 40 },
+      4: { halign: 'center', cellWidth: 40 }
     },
     margin: { left: 15, right: 15 },
     styles: {
