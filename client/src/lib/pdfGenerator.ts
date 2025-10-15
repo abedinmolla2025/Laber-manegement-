@@ -227,7 +227,8 @@ export const generateLaborPDF = async (labor: Labor) => {
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(0, 0, 0);
   
-  const netPayable = labor.totalDuty - labor.totalAdvance;
+  const totalAmount = labor.totalDuty * labor.dailyRate;
+  const netPayable = totalAmount - labor.totalAdvance;
   const leftCol = 20;
   const rightCol = pageWidth / 2 + 10;
   
@@ -239,7 +240,7 @@ export const generateLaborPDF = async (labor: Labor) => {
   doc.setFont('helvetica', 'normal');
   doc.text(`Total Duty:`, leftCol, finalY + 24);
   doc.setFont('helvetica', 'bold');
-  doc.text(`₹${labor.totalDuty.toLocaleString()}`, leftCol + 40, finalY + 24);
+  doc.text(`${labor.totalDuty} days`, leftCol + 40, finalY + 24);
   
   // Right column
   doc.setFont('helvetica', 'normal');
