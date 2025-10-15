@@ -187,8 +187,43 @@ export default function HomePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="text-muted-foreground">Loading laborers...</p>
+      <div className="min-h-screen bg-background">
+        <header className="border-b sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between gap-4">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Labor Management</h1>
+              <p className="text-sm text-muted-foreground mt-1">Track duties, advances, and payments efficiently</p>
+            </div>
+            <ThemeToggle />
+          </div>
+        </header>
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+          <div className="w-full sm:max-w-md h-10 bg-muted rounded-lg animate-pulse"></div>
+          <div className="space-y-4">
+            <div className="h-6 w-32 bg-muted rounded animate-pulse"></div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-10 bg-muted rounded-lg animate-pulse"></div>
+              ))}
+            </div>
+          </div>
+          <div className="space-y-4">
+            <div className="h-6 w-40 bg-muted rounded animate-pulse"></div>
+            <div className="border rounded-xl overflow-hidden bg-card shadow-sm p-6">
+              <div className="space-y-4">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="flex items-center gap-4">
+                    <div className="h-10 w-10 rounded-full bg-muted animate-pulse"></div>
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 bg-muted rounded w-1/4 animate-pulse"></div>
+                      <div className="h-3 bg-muted rounded w-1/2 animate-pulse"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </main>
       </div>
     );
   }
