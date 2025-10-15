@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Upload, Crop } from "lucide-react";
+import { Plus, Upload, Crop, RotateCcw } from "lucide-react";
 
 interface AddLaborDialogProps {
   onAdd: (name: string, dailyRate: number, photo?: string, address?: string) => void;
@@ -188,6 +188,17 @@ export default function AddLaborDialog({ onAdd }: AddLaborDialogProps) {
     setIsDragging(false);
   };
 
+  const resetCropToCenter = () => {
+    if (!canvasRef.current) return;
+    const canvas = canvasRef.current;
+    const cropSize = Math.min(canvas.width, canvas.height) * 0.85;
+    setCrop({
+      x: (canvas.width - cropSize) / 2,
+      y: (canvas.height - cropSize) / 2,
+      size: cropSize
+    });
+  };
+
   const handleCrop = () => {
     if (!canvasRef.current || !imageRef.current) return;
     
@@ -322,9 +333,21 @@ export default function AddLaborDialog({ onAdd }: AddLaborDialogProps) {
                     data-testid="canvas-crop"
                   />
                 </div>
-                <p className="text-xs text-muted-foreground text-center">
-                  Drag the blue square to adjust crop area
-                </p>
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-xs text-muted-foreground flex-1">
+                    Drag the blue square to adjust crop area
+                  </p>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={resetCropToCenter}
+                    data-testid="button-reset-crop"
+                  >
+                    <RotateCcw className="h-3 w-3 mr-1" />
+                    Reset
+                  </Button>
+                </div>
                 <div className="flex gap-2">
                   <Button
                     type="button"

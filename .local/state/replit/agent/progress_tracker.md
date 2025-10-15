@@ -69,11 +69,19 @@ All migration tasks have been successfully completed. The Labor Management appli
 [x] 41. Add center crosshair guides for precise positioning - COMPLETED ✓
 [x] 42. Increase border thickness from 2px to 3px - COMPLETED ✓
 
+## Crop Reset and Manual Selection
+[x] 43. Add Reset button to recenter crop area to default position - COMPLETED ✓
+[x] 44. Crop area automatically centers by default at 85% size - COMPLETED ✓
+[x] 45. Manual drag and drop to select any area of photo - COMPLETED ✓
+[x] 46. Reset button with rotate icon for visual clarity - COMPLETED ✓
+
 ---
 ## All Features Complete
 The Labor Management System now includes:
 ✓ Labor tracking with name, daily rate, photo, and address
-✓ Photo upload from device with enhanced cropping interface
+✓ Photo upload from device with advanced cropping interface
+✓ Crop area centered by default with manual selection
+✓ Reset button to recenter crop area instantly
 ✓ Duty and advance payment tracking
 ✓ Summary dashboard with totals and net payable
 ✓ Search functionality
