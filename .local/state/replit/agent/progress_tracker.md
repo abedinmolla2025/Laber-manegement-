@@ -205,9 +205,20 @@ Daily = Quantity (মাত্রা), দিনে 1, 1.5, বা 2 daily হ�
 - Total Advance: ₹2,000
 - Net Payable: ₹5,500 (Total Daily × Daily Rate - Total Advance)
 
+## Cross Mark for Non-Working Days
+[x] 87. Add cross mark (×) for days with no duty entries in PDF - COMPLETED ✓
+[x] 88. Fill all dates between first and last duty entry - COMPLETED ✓
+[x] 89. Verify cross marks display correctly for non-working days - COMPLETED ✓
+
+**নতুন Feature:** যেদিন কাজ করবে না সেদিন রিক্রস মার্ক (×) দেখাবে
+- First duty entry date থেকে last duty entry date পর্যন্ত সব dates PDF-তে দেখাবে
+- যেদিন duty entry নেই সেদিন Daily column-এ × mark দেখাবে
+- Rate এবং Advance column-এ '-' দেখাবে
+
 ✅ **FINAL STATUS: ALL TASKS COMPLETE**
 Server running on port 5000 ✓
 All features operational ✓
 PDF calculation fixed ✓
 Net payable calculation corrected ✓
+Cross marks for non-working days ✓
 Ready for production use ✓
