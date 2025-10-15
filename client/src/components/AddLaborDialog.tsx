@@ -156,35 +156,85 @@ export default function AddLaborDialog({ onAdd }: AddLaborDialogProps) {
     ctx.setLineDash([]);
   };
 
-  const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const getEventPosition = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) return null;
     
     const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    let clientX, clientY;
     
-    if (x >= crop.x && x <= crop.x + crop.size && y >= crop.y && y <= crop.y + crop.size) {
+    if ('touches' in e) {
+      if (e.touches.length === 0) return null;
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+    
+    return {
+      x: clientX - rect.left,
+      y: clientY - rect.top
+    };
+  };
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    const pos = getEventPosition(e);
+    if (!pos) return;
+    
+    if (pos.x >= crop.x && pos.x <= crop.x + crop.size && 
+        pos.y >= crop.y && pos.y <= crop.y + crop.size) {
       setIsDragging(true);
-      setDragStart({ x: x - crop.x, y: y - crop.y });
+      setDragStart({ x: pos.x - crop.x, y: pos.y - crop.y });
+    }
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    const pos = getEventPosition(e);
+    if (!pos) return;
+    
+    if (pos.x >= crop.x && pos.x <= crop.x + crop.size && 
+        pos.y >= crop.y && pos.y <= crop.y + crop.size) {
+      setIsDragging(true);
+      setDragStart({ x: pos.x - crop.x, y: pos.y - crop.y });
     }
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
     if (!isDragging || !canvasRef.current) return;
     
-    const canvas = canvasRef.current;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const pos = getEventPosition(e);
+    if (!pos) return;
     
-    const newX = Math.max(0, Math.min(x - dragStart.x, canvas.width - crop.size));
-    const newY = Math.max(0, Math.min(y - dragStart.y, canvas.height - crop.size));
+    const canvas = canvasRef.current;
+    const newX = Math.max(0, Math.min(pos.x - dragStart.x, canvas.width - crop.size));
+    const newY = Math.max(0, Math.min(pos.y - dragStart.y, canvas.height - crop.size));
+    
+    setCrop({ ...crop, x: newX, y: newY });
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    if (!isDragging || !canvasRef.current) return;
+    
+    const pos = getEventPosition(e);
+    if (!pos) return;
+    
+    const canvas = canvasRef.current;
+    const newX = Math.max(0, Math.min(pos.x - dragStart.x, canvas.width - crop.size));
+    const newY = Math.max(0, Math.min(pos.y - dragStart.y, canvas.height - crop.size));
     
     setCrop({ ...crop, x: newX, y: newY });
   };
 
   const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleTouchEnd = () => {
     setIsDragging(false);
   };
 
@@ -329,13 +379,16 @@ export default function AddLaborDialog({ onAdd }: AddLaborDialogProps) {
                     onMouseMove={handleMouseMove}
                     onMouseUp={handleMouseUp}
                     onMouseLeave={handleMouseUp}
-                    className="border-2 border-border rounded cursor-move"
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
+                    className="border-2 border-border rounded cursor-move touch-none"
                     data-testid="canvas-crop"
                   />
                 </div>
                 <div className="flex items-center justify-between gap-2">
                   <p className="text-xs text-muted-foreground flex-1">
-                    Drag the blue square to adjust crop area
+                    নীল বক্সটি উপর-নিচে/ডান-বামে টেনে সরান (Drag blue box to move up/down/left/right)
                   </p>
                   <Button
                     type="button"
