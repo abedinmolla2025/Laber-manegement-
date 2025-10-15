@@ -42,7 +42,9 @@ import {
   advanceEntries 
 } from "@shared/schema";
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const pool = new Pool({ 
+  connectionString: `${process.env.DATABASE_URL}?sslmode=require`
+});
 const db = drizzle(pool);
 
 export class DbStorage implements IStorage {
