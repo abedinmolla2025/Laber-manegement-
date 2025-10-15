@@ -277,12 +277,18 @@ export default function HomePage() {
           <LaborTable laborers={laborTableData} onEdit={handleEditLabor} onDelete={handleDeleteLabor} onPdfPreview={handlePdfPreview} onPdfDownload={handlePdfDownload} />
         </div>
 
-        <SummaryCards
-          totalLaborers={totalLaborers}
-          totalDuty={totalDuty}
-          totalAdvance={totalAdvance}
-          netPayable={netPayable}
-        />
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-1 bg-primary rounded-full"></div>
+            <h2 className="text-lg font-semibold">Summary Overview</h2>
+          </div>
+          <SummaryCards
+            totalLaborers={totalLaborers}
+            totalDuty={totalDuty}
+            totalAdvance={totalAdvance}
+            netPayable={netPayable}
+          />
+        </div>
       </main>
     </div>
   );
