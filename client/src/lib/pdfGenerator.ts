@@ -129,23 +129,39 @@ export const generateLaborPDF = async (labor: Labor) => {
     advance: number | string 
   }> = [];
   
+  // Get all dates from duty and advance entries
   const allDates = new Set<string>();
   labor.dutyEntries.forEach(entry => allDates.add(entry.date));
   labor.advanceEntries.forEach(entry => allDates.add(entry.date));
   
   const sortedDates = Array.from(allDates).sort();
   
-  sortedDates.forEach(date => {
-    const dutyEntry = labor.dutyEntries.find(d => d.date === date);
-    const advanceEntry = labor.advanceEntries.find(a => a.date === date);
+  // If there are entries, fill in all dates between first and last
+  if (sortedDates.length > 0) {
+    const firstDate = new Date(sortedDates[0]);
+    const lastDate = new Date(sortedDates[sortedDates.length - 1]);
     
-    mergedEntries.push({
-      date,
-      daily: dutyEntry ? dutyEntry.daily : '-',
-      rate: dutyEntry ? `₹${dutyEntry.amount}` : '-',
-      advance: advanceEntry ? `₹${advanceEntry.amount}` : '-'
+    const allDatesFilled: string[] = [];
+    const currentDate = new Date(firstDate);
+    
+    while (currentDate <= lastDate) {
+      const dateStr = currentDate.toISOString().split('T')[0];
+      allDatesFilled.push(dateStr);
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    
+    allDatesFilled.forEach(date => {
+      const dutyEntry = labor.dutyEntries.find(d => d.date === date);
+      const advanceEntry = labor.advanceEntries.find(a => a.date === date);
+      
+      mergedEntries.push({
+        date,
+        daily: dutyEntry ? dutyEntry.daily : '×',
+        rate: dutyEntry ? `₹${dutyEntry.amount}` : '-',
+        advance: advanceEntry ? `₹${advanceEntry.amount}` : '-'
+      });
     });
-  });
+  }
   
   const tableData = mergedEntries.map(entry => {
     // Parse date correctly - handle YYYY-MM-DD format
