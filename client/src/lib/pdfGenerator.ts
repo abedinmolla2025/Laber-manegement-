@@ -231,10 +231,17 @@ export const generateLaborPDF = async (labor: Labor) => {
   const leftCol = 20;
   const rightCol = pageWidth / 2 + 10;
   
-  doc.text(`Total Duty Days:`, leftCol, finalY + 14);
+  // Left column
+  doc.text(`Total Daily:`, leftCol, finalY + 14);
   doc.setFont('helvetica', 'bold');
-  doc.text(`₹${labor.totalDuty.toLocaleString()}`, leftCol + 60, finalY + 14);
+  doc.text(`${labor.totalDaily}`, leftCol + 40, finalY + 14);
   
+  doc.setFont('helvetica', 'normal');
+  doc.text(`Total Duty:`, leftCol, finalY + 24);
+  doc.setFont('helvetica', 'bold');
+  doc.text(`₹${labor.totalDuty.toLocaleString()}`, leftCol + 40, finalY + 24);
+  
+  // Right column
   doc.setFont('helvetica', 'normal');
   doc.text(`Total Advance:`, rightCol, finalY + 14);
   doc.setFont('helvetica', 'bold');
