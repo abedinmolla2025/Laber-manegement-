@@ -205,22 +205,14 @@ export default function HomePage() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">
-        <SummaryCards
-          totalLaborers={totalLaborers}
-          totalDuty={totalDuty}
-          totalAdvance={totalAdvance}
-          netPayable={netPayable}
-        />
+        <div className="w-full sm:max-w-md">
+          <SearchBar value={searchQuery} onChange={setSearchQuery} />
+        </div>
 
-        <div className="flex flex-col gap-4">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <AddLaborDialog onAdd={handleAddLabor} />
-            <AddDutyDialog laborers={laborers} onAdd={handleAddDuty} />
-            <AddAdvanceDialog laborers={laborers} onAdd={handleAddAdvance} />
-          </div>
-          <div className="w-full sm:max-w-md">
-            <SearchBar value={searchQuery} onChange={setSearchQuery} />
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <AddLaborDialog onAdd={handleAddLabor} />
+          <AddDutyDialog laborers={laborers} onAdd={handleAddDuty} />
+          <AddAdvanceDialog laborers={laborers} onAdd={handleAddAdvance} />
         </div>
 
         <div>
@@ -233,6 +225,13 @@ export default function HomePage() {
           </div>
           <LaborTable laborers={laborTableData} onEdit={handleEditLabor} onDelete={handleDeleteLabor} onPdfPreview={handlePdfPreview} onPdfDownload={handlePdfDownload} />
         </div>
+
+        <SummaryCards
+          totalLaborers={totalLaborers}
+          totalDuty={totalDuty}
+          totalAdvance={totalAdvance}
+          netPayable={netPayable}
+        />
       </main>
     </div>
   );
