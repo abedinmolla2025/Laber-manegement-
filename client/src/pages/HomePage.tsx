@@ -25,9 +25,54 @@ export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState("");
   //todo: remove mock functionality
   const [laborers, setLaborers] = useState<Labor[]>([
-    { id: '1', name: 'Rajesh Kumar', dailyRate: 800, totalDaily: 15, totalDuty: 12000, totalAdvance: 5000, dutyEntries: [], advanceEntries: [] },
-    { id: '2', name: 'Amit Sharma', dailyRate: 750, totalDaily: 12.5, totalDuty: 9500, totalAdvance: 3000, dutyEntries: [], advanceEntries: [] },
-    { id: '3', name: 'Vijay Singh', dailyRate: 900, totalDaily: 16.5, totalDuty: 15000, totalAdvance: 7000, dutyEntries: [], advanceEntries: [] },
+    { 
+      id: '1', 
+      name: 'Rajesh Kumar', 
+      dailyRate: 800, 
+      totalDaily: 15, 
+      totalDuty: 12000, 
+      totalAdvance: 5000, 
+      dutyEntries: [
+        { date: '2024-10-01', daily: 5, amount: 4000 },
+        { date: '2024-10-05', daily: 4, amount: 3200 },
+        { date: '2024-10-10', daily: 6, amount: 4800 }
+      ], 
+      advanceEntries: [
+        { date: '2024-10-03', amount: 2000 },
+        { date: '2024-10-08', amount: 3000 }
+      ] 
+    },
+    { 
+      id: '2', 
+      name: 'Amit Sharma', 
+      dailyRate: 750, 
+      totalDaily: 12.5, 
+      totalDuty: 9500, 
+      totalAdvance: 3000, 
+      dutyEntries: [
+        { date: '2024-10-02', daily: 5.5, amount: 4125 },
+        { date: '2024-10-07', daily: 7, amount: 5250 }
+      ], 
+      advanceEntries: [
+        { date: '2024-10-04', amount: 3000 }
+      ] 
+    },
+    { 
+      id: '3', 
+      name: 'Vijay Singh', 
+      dailyRate: 900, 
+      totalDaily: 16.5, 
+      totalDuty: 15000, 
+      totalAdvance: 7000, 
+      dutyEntries: [
+        { date: '2024-10-01', daily: 8, amount: 7200 },
+        { date: '2024-10-06', daily: 8.5, amount: 7650 }
+      ], 
+      advanceEntries: [
+        { date: '2024-10-02', amount: 4000 },
+        { date: '2024-10-09', amount: 3000 }
+      ] 
+    },
   ]);
 
   const handleAddLabor = (name: string, dailyRate: number) => {
