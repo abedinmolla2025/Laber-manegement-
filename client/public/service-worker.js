@@ -1,8 +1,7 @@
 const CACHE_NAME = 'labor-management-v1';
 const urlsToCache = [
   '/',
-  '/index.html',
-  '/src/main.tsx'
+  '/index.html'
 ];
 
 self.addEventListener('install', (event) => {
