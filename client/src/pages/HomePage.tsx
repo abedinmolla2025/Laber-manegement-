@@ -121,6 +121,15 @@ export default function HomePage() {
         variant: "destructive",
       });
     },
+    onError: (error: any, id) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/laborers/complete'] });
+      const labor = laborers.find(l => l.id === id);
+      toast({
+        title: "Error",
+        description: `Failed to delete ${labor?.name}. It may have already been removed.`,
+        variant: "destructive",
+      });
+    },
   });
 
   const handleAddLabor = (name: string, dailyRate: number, photo?: string, address?: string) => {
