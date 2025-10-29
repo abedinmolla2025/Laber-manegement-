@@ -1,4 +1,4 @@
-const CACHE_NAME = 'labor-management-v1';
+const CACHE_NAME = 'labor-management-v2';
 const urlsToCache = [
   '/',
   '/index.html'
@@ -33,6 +33,13 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  // Never cache API requests - always fetch from network
+  if (event.request.url.includes('/api/')) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
+  // For non-API requests, use cache-first strategy
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
