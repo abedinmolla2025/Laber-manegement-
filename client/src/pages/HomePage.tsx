@@ -10,6 +10,7 @@ import SearchBar from "@/components/SearchBar";
 import { useToast } from "@/hooks/use-toast";
 import { previewLaborPDF, downloadLaborPDF } from "@/lib/pdfGenerator";
 import { queryClient, apiRequest } from "@/lib/queryClient";
+import { Users } from "lucide-react";
 
 interface Labor {
   id: string;
@@ -254,45 +255,50 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight" data-testid="text-app-title">
-              Labor Management
-            </h1>
-            <p className="text-sm text-muted-foreground mt-1">Track duties, advances, and payments efficiently</p>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+      <header className="border-b sticky top-0 bg-gradient-to-r from-primary/5 via-background/95 to-primary/5 backdrop-blur-xl supports-[backdrop-filter]:bg-background/80 z-50 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-lg">
+              <Users className="h-6 w-6 text-primary-foreground" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent" data-testid="text-app-title">
+                Labor Management
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1 font-medium">Track duties, advances, and payments efficiently</p>
+            </div>
           </div>
           <ThemeToggle />
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="w-full sm:max-w-md">
             <SearchBar value={searchQuery} onChange={setSearchQuery} />
           </div>
         </div>
 
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-1 bg-primary rounded-full"></div>
-            <h2 className="text-lg font-semibold">Quick Actions</h2>
+        <div className="space-y-5">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-1.5 bg-gradient-to-b from-primary to-primary/50 rounded-full shadow-sm"></div>
+            <h2 className="text-xl font-bold tracking-tight">Quick Actions</h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <AddLaborDialog onAdd={handleAddLabor} />
             <AddDutyDialog laborers={laborers} onAdd={handleAddDuty} />
             <AddAdvanceDialog laborers={laborers} onAdd={handleAddAdvance} />
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-5">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="h-8 w-1 bg-primary rounded-full"></div>
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-1.5 bg-gradient-to-b from-primary to-primary/50 rounded-full shadow-sm"></div>
               <div>
-                <h2 className="text-lg font-semibold">Labor Records</h2>
-                <p className="text-sm text-muted-foreground mt-0.5">
+                <h2 className="text-xl font-bold tracking-tight">Labor Records</h2>
+                <p className="text-sm text-muted-foreground mt-1 font-medium">
                   {filteredLaborers.length} {filteredLaborers.length === 1 ? 'laborer' : 'laborers'} 
                   {searchQuery && ` matching "${searchQuery}"`}
                 </p>
@@ -302,10 +308,10 @@ export default function HomePage() {
           <LaborTable laborers={laborTableData} onEdit={handleEditLabor} onDelete={handleDeleteLabor} onPdfPreview={handlePdfPreview} onPdfDownload={handlePdfDownload} />
         </div>
 
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-1 bg-primary rounded-full"></div>
-            <h2 className="text-lg font-semibold">Summary Overview</h2>
+        <div className="space-y-5">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-1.5 bg-gradient-to-b from-primary to-primary/50 rounded-full shadow-sm"></div>
+            <h2 className="text-xl font-bold tracking-tight">Summary Overview</h2>
           </div>
           <SummaryCards
             totalLaborers={totalLaborers}
