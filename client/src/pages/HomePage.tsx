@@ -28,19 +28,30 @@ export default function HomePage() {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: laborers = [], isLoading } = useQuery<Labor[]>({
+  const { data: laborers = [], isLoading, refetch } = useQuery<Labor[]>({
     queryKey: ['/api/laborers/complete'],
+    staleTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 
   const addLaborMutation = useMutation({
     mutationFn: async (data: { name: string; dailyRate: number; photo?: string; address?: string }) => {
       return apiRequest('POST', '/api/laborers', data);
     },
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/laborers/complete'] });
+    onSuccess: async (_, variables) => {
+      await queryClient.invalidateQueries({ queryKey: ['/api/laborers/complete'] });
+      await queryClient.refetchQueries({ queryKey: ['/api/laborers/complete'] });
       toast({
         title: "Labor Added",
         description: `${variables.name} has been added successfully.`,
+      });
+    },
+    onError: (error: any, variables) => {
+      toast({
+        title: "Error",
+        description: `Failed to add ${variables.name}. Please try again.`,
+        variant: "destructive",
       });
     },
   });
@@ -56,8 +67,9 @@ export default function HomePage() {
         amount: amount,
       });
     },
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/laborers/complete'] });
+    onSuccess: async (_, variables) => {
+      await queryClient.invalidateQueries({ queryKey: ['/api/laborers/complete'] });
+      await queryClient.refetchQueries({ queryKey: ['/api/laborers/complete'] });
       const labor = laborers.find(l => l.id === variables.laborerId);
       toast({
         title: "Duty Added",
@@ -70,8 +82,9 @@ export default function HomePage() {
     mutationFn: async (data: { laborerId: string; amount: number; date: string }) => {
       return apiRequest('POST', '/api/advance-entries', data);
     },
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/laborers/complete'] });
+    onSuccess: async (_, variables) => {
+      await queryClient.invalidateQueries({ queryKey: ['/api/laborers/complete'] });
+      await queryClient.refetchQueries({ queryKey: ['/api/laborers/complete'] });
       const labor = laborers.find(l => l.id === variables.laborerId);
       toast({
         title: "Advance Added",
@@ -99,8 +112,9 @@ export default function HomePage() {
         );
       }
     },
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/laborers/complete'] });
+    onSuccess: async (_, variables) => {
+      await queryClient.invalidateQueries({ queryKey: ['/api/laborers/complete'] });
+      await queryClient.refetchQueries({ queryKey: ['/api/laborers/complete'] });
       toast({
         title: "Labor Updated",
         description: `${variables.name} details have been updated successfully. All amounts recalculated.`,
@@ -112,8 +126,9 @@ export default function HomePage() {
     mutationFn: async (id: string) => {
       return apiRequest('DELETE', `/api/laborers/${id}`);
     },
-    onSuccess: (_, id) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/laborers/complete'] });
+    onSuccess: async (_, id) => {
+      await queryClient.invalidateQueries({ queryKey: ['/api/laborers/complete'] });
+      await queryClient.refetchQueries({ queryKey: ['/api/laborers/complete'] });
       const labor = laborers.find(l => l.id === id);
       toast({
         title: "Labor Deleted",
@@ -121,8 +136,9 @@ export default function HomePage() {
         variant: "destructive",
       });
     },
-    onError: (error: any, id) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/laborers/complete'] });
+    onError: async (error: any, id) => {
+      await queryClient.invalidateQueries({ queryKey: ['/api/laborers/complete'] });
+      await queryClient.refetchQueries({ queryKey: ['/api/laborers/complete'] });
       const labor = laborers.find(l => l.id === id);
       toast({
         title: "Error",
